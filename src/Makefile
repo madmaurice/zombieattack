@@ -1,13 +1,14 @@
 OBJS = Object.o SpatialHash.o Bullet.o Entity.o Enemy.o Player.o Main.o 
 CC = g++
-DEBUG = -g
-CFLAGS = -Wall -c $(DEBUG) -lsfml-audio -lsfml-graphics -lsfml-system -I../include
-LFLAGS = -Wall $(DEBUG) -lsfml-audio -lsfml-graphics -lsfml-system -I../include
+#DEBUG = -g
+DEBUG = 
+CFLAGS = -Wall -c $(DEBUG) -L$(SFML_LIB_DIR) -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system -I$(SFML_INC_DIR) -I../include
+LFLAGS = -Wall $(DEBUG) -L$(SFML_LIB_DIR) -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system -I$(SFML_INC_DIR) -I../include
 
 SHELL = /bin/sh
 
 .SUFFIXES: 
-.SUFFIXES: .cc .cpp .h .o
+.SUFFIXES: .cpp .h .o
 
 zombie.bin : $(OBJS)
 	$(CC) $(LFLAGS) $(OBJS) -o zombie.bin
@@ -30,8 +31,8 @@ Enemy.o : Enemy.cpp
 Player.o : Player.cpp 
 	$(CC) $(CFLAGS) Player.cpp
 
-Main.o : Main.cc 
-	$(CC) $(CFLAGS) Main.cc
+Main.o : Main.cpp 
+	$(CC) $(CFLAGS) Main.cpp
 
 clean:
-	rm *.o *.bin
+	rm -f *.o *.bin
