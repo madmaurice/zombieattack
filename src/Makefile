@@ -9,9 +9,10 @@ OBJLIST := Object.o SpatialHash.o Bullet.o Entity.o Enemy.o Player.o Main.o
 
 OBJS := $(addprefix $(OBJDIR)/,$(OBJLIST))
 
-CXXFLAGS = -Wall $(DEBUG) -L$(SFML_LIB_DIR) -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system -I$(SFML_INC_DIR) -I../include
+CXXFLAGS := -Wall $(DEBUG) -I$(SFML_INC_DIR) -I../include
+LDFLAGS := -Wall $(DEBUG) -L$(SFML_LIB_DIR) -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system -I$(SFML_INC_DIR)
 
-SHELL = /bin/sh
+SHELL := /bin/sh
 
 .SUFFIXES: 
 .SUFFIXES: .cpp .h .o
@@ -30,7 +31,7 @@ $(OBJDIR):
 	mkdir $(OBJDIR) 
 
 $(EXEC) : $(OBJS)
-	$(CXX) $^ -o $(EXEC) $(CXXFLAGS)
+	$(CXX) $^ -o $(EXEC) $(LDFLAGS)
 
 $(OBJDIR)/%.o : %.cpp
 	$(CXX) -c $< -o $@ $(CXXFLAGS)
