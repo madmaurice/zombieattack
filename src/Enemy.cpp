@@ -8,6 +8,7 @@ const float Enemy::DEATH_DELAY = 0.6;
 
 Enemy::Enemy(int x, int y, int level) : Entity(level, level)
 {
+
   if (!down[0].LoadFromFile("../resources/sprites/MFront1.png")) {
     std::cout << "Error loading image" << std::endl;
   }
@@ -158,6 +159,7 @@ bool Enemy::alive(std::vector<Object*> &objects, int me, float running_time)
       sound.SetVolume(75.f);
       sound.Play();
       death_time = running_time;
+      std::cout << "DEATH DELAY" << std::endl;
     }
     else
       speed /= 2.;

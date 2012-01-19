@@ -1,6 +1,7 @@
 #!/bin/bash
 
-export SFML_DIR=$HOME/dev/lib/SFML-1.6
+export PROJECT_ROOT=$PWD
+export SFML_DIR=$PWD/sfml
 export SFML_LIB_DIR=$SFML_DIR/lib
 export SFML_INC_DIR=$SFML_DIR/include
 

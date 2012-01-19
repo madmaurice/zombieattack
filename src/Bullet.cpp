@@ -22,47 +22,47 @@ void Bullet::move(float ElapsedTime, std::vector<Object*> &objects, std::vector<
   float velocity = speed * ElapsedTime;
 
   if(facing == LEFT) 
+  {
+    _x += -velocity;
+    if (_x > 0 && available[LEFT])
+      avatar.Move(-velocity, 0);
+    else 
     {
-      _x += -velocity;
-      if (_x > 0 && available[LEFT])
-	avatar.Move(-velocity, 0);
-      else 
-	{
-	  delete bullets[me];
-	  bullets.erase(bullets.begin() + me);
-	}
+      delete bullets[me];
+      bullets.erase(bullets.begin() + me);
     }
+  }
   else if(facing == RIGHT) 
-    {    
-      _x += velocity;
-      if (_x + _w < SCREEN_WIDTH && available[RIGHT])
-	avatar.Move(velocity, 0);
-      else 
-	{
-	  delete bullets[me];
-	  bullets.erase(bullets.begin() + me);
-	}
+  {    
+    _x += velocity;
+    if (_x + _w < SCREEN_WIDTH && available[RIGHT])
+      avatar.Move(velocity, 0);
+    else 
+    {
+      delete bullets[me];
+      bullets.erase(bullets.begin() + me);
     }
+  }
   else if(facing == UP) 
+  {
+    _y += -velocity;
+    if (_y > 0 && available[UP]) 
+      avatar.Move(0, -velocity);   
+    else 
     {
-      _y += -velocity;
-      if (_y > 0 && available[UP]) 
-	avatar.Move(0, -velocity);   
-      else 
-	{
-	  delete bullets[me];
-	  bullets.erase(bullets.begin() + me);
-	}
+      delete bullets[me];
+      bullets.erase(bullets.begin() + me);
     }
+  }
   else if(facing == DOWN) 
+  {
+    _y += velocity;
+    if (_y + _h < SCREEN_HEIGHT && available[DOWN])
+      avatar.Move(0, velocity);
+    else 
     {
-      _y += velocity;
-      if (_y + _h < SCREEN_HEIGHT && available[DOWN])
-	avatar.Move(0, velocity);
-      else 
-	{
-	  delete bullets[me];
-	  bullets.erase(bullets.begin() + me);
-	}
-    }  
+      delete bullets[me];
+      bullets.erase(bullets.begin() + me);
+    }
+  }  
 }

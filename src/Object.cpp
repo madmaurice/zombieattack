@@ -3,8 +3,9 @@
 
 #include "Object.h"
 
+
 Object::Object() {
-    
+
   if (!down[0].LoadFromFile("../resources/sprites/PFront1.png")) {
     std::cout << "Error loading image" << std::endl;
   }
@@ -61,7 +62,7 @@ Object::Object() {
     left[i].CreateMaskFromColor(sf::Color(255, 255, 255));
   for(unsigned int i = 0; i < 3; ++i)
     right[i].CreateMaskFromColor(sf::Color(255, 255, 255));
-	
+
   avatar.SetImage(down[0]);
   avatar.SetColor(sf::Color(255, 255, 255, 255));
   avatar.SetPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + std::rand()%100);
@@ -93,46 +94,46 @@ void Object::move(Direction d, float ElapsedTime, std::vector<Object*> &objects,
 
   frame_buffer++;
   if(frame_buffer%10 == 0) 
-    {
-      frame++;
-      frame_buffer = 0;
-    }
+  {
+    frame++;
+    frame_buffer = 0;
+  }
 
   if(frame == 3)
     frame = 0;      
 
   if(d == LEFT) 
-    {
-      avatar.SetImage(left[frame]);
-      facing = LEFT;
-      _x += -velocity;
-      if (_x > 50 && available[LEFT])
-	avatar.Move(-velocity, 0);
-    }
+  {
+    avatar.SetImage(left[frame]);
+    facing = LEFT;
+    _x += -velocity;
+    if (_x > 50 && available[LEFT])
+      avatar.Move(-velocity, 0);
+  }
   else if(d == RIGHT) 
-    {    
-      avatar.SetImage(right[frame]);
-      facing = RIGHT;
-      _x += velocity;
-      if (_x + _w < GAME_WIDTH && available[RIGHT])
-	avatar.Move(velocity, 0);
-    }
+  {    
+    avatar.SetImage(right[frame]);
+    facing = RIGHT;
+    _x += velocity;
+    if (_x + _w < GAME_WIDTH && available[RIGHT])
+      avatar.Move(velocity, 0);
+  }
   else if(d == UP) 
-    {
-      avatar.SetImage(up[frame]);
-      facing = UP;
-      _y += -velocity;
-      if (_y > 50 && available[UP]) 
-	avatar.Move(0, -velocity);    
-    }
+  {
+    avatar.SetImage(up[frame]);
+    facing = UP;
+    _y += -velocity;
+    if (_y > 50 && available[UP]) 
+      avatar.Move(0, -velocity);    
+  }
   else if(d == DOWN) 
-    {
-      avatar.SetImage(down[frame]);
-      facing = DOWN;
-      _y += velocity;
-      if (_y + _h < GAME_HEIGHT && available[DOWN])
-	avatar.Move(0, velocity);
-    }  
+  {
+    avatar.SetImage(down[frame]);
+    facing = DOWN;
+    _y += velocity;
+    if (_y + _h < GAME_HEIGHT && available[DOWN])
+      avatar.Move(0, velocity);
+  }  
 }
 
 sf::Sprite Object::getSprite() {
@@ -157,30 +158,30 @@ int* Object::collisions(std::vector<Object*> objects, std::vector<int> possible)
   float _y = avatar.GetPosition().y + (avatar.GetSize().y / 2);
 
   for(unsigned int i = 0; i < possible.size(); ++i)
+  {
+    position = possible[i];
+    if(this != objects[position])
     {
-      position = possible[i];
-      if(this != objects[position])
-	{
-	  float other_x = objects[position]->getSprite().GetPosition().x + (objects[position]->getSprite().GetSize().x / 2);
-	  float other_y = objects[position]->getSprite().GetPosition().y + (objects[position]->getSprite().GetSize().y / 2);
+      float other_x = objects[position]->getSprite().GetPosition().x + (objects[position]->getSprite().GetSize().x / 2);
+      float other_y = objects[position]->getSprite().GetPosition().y + (objects[position]->getSprite().GetSize().y / 2);
 
-	  float y = abs(_y - other_y);
-	  y -= (objects[position]->getSprite().GetSize().y / 2) + (avatar.GetSize().y / 2);
-	  float x = abs(_x - other_x);
-	  x -= (objects[position]->getSprite().GetSize().x / 2) + (avatar.GetSize().x / 2);
+      float y = abs(_y - other_y);
+      y -= (objects[position]->getSprite().GetSize().y / 2) + (avatar.GetSize().y / 2);
+      float x = abs(_x - other_x);
+      x -= (objects[position]->getSprite().GetSize().x / 2) + (avatar.GetSize().x / 2);
 
-	  if(y < 0 && x < 0)
-	    {
-	      if(y >= x)
-		(_y > other_y ? open_sides[UP] = 0 : open_sides[DOWN] = 0);  
-	      if(x >= y)
-		(_x > other_x ? open_sides[LEFT] = 0 : open_sides[RIGHT] = 0);
-	      if(enemy(objects[position]))
-		objects[position]->takeDamage(objects, position, getAttack());
-				
-	    }	
-	}
-    }	
+      if(y < 0 && x < 0)
+      {
+        if(y >= x)
+          (_y > other_y ? open_sides[UP] = 0 : open_sides[DOWN] = 0);  
+        if(x >= y)
+          (_x > other_x ? open_sides[LEFT] = 0 : open_sides[RIGHT] = 0);
+        if(enemy(objects[position]))
+          objects[position]->takeDamage(objects, position, getAttack());
+
+      }	
+    }
+  }	
   return open_sides;
 }
 

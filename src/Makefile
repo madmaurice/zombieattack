@@ -1,7 +1,7 @@
 CXX := g++
 EXEC := zombie
-DEBUG := -O2
-#DEBUG := -g
+#DEBUG := -O2
+DEBUG := -g
 
 OBJDIR := obj
 
@@ -17,12 +17,15 @@ SHELL := /bin/sh
 .SUFFIXES: 
 .SUFFIXES: .cpp .h .o
 
-.PHONY: all clean
+.PHONY: all clean ctags
 all : $(EXEC)
 
 clean:
 	rm -f $(OBJS)
 	rm -f $(EXEC)
+
+ctags:
+	ctags --extra=+q --c++-kinds=+cdefgmnpstuvx $(shell find -L ../include/ . -name '*.[ch]*')
 
 #OBJS depend on OBJDIR only on the first object .o
 $(OBJS): | $(OBJDIR)
