@@ -6,7 +6,7 @@
 const float Enemy::SFX_DELAY = 10.0;
 const float Enemy::DEATH_DELAY = 0.6;
 
-Enemy::Enemy(int x, int y, int level) : Entity(level, level)
+Enemy::Enemy(ParticleSystem& pSys, int x, int y, int level) : Entity(level, level), partSystem(pSys)
 {
 
   if (!down[0].LoadFromFile("../resources/sprites/MFront1.png")) {
@@ -159,7 +159,16 @@ bool Enemy::alive(std::vector<Object*> &objects, int me, float running_time)
       sound.SetVolume(75.f);
       sound.Play();
       death_time = running_time;
-      std::cout << "DEATH DELAY" << std::endl;
+
+      int posX = objects[me]->getSprite().GetPosition().x;
+      int posY = objects[me]->getSprite().GetPosition().y;
+      int width = objects[me]->getSprite().GetSubRect().GetWidth();
+      int height = objects[me]->getSprite().GetSubRect().GetWidth();
+
+      posX += width /2;
+      posY += height /2;
+
+      partSystem.fuel(2000, sf::Vector2f(posX, posY));
     }
     else
       speed /= 2.;

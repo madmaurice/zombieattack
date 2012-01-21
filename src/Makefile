@@ -5,11 +5,11 @@ DEBUG := -g
 
 OBJDIR := obj
 
-OBJLIST := Object.o SpatialHash.o Bullet.o Entity.o Enemy.o Player.o Main.o 
+OBJLIST := Object.o SpatialHash.o Bullet.o Entity.o Enemy.o Player.o Particle.o Main.o 
 
 OBJS := $(addprefix $(OBJDIR)/,$(OBJLIST))
 
-CXXFLAGS := -Wall $(DEBUG) -I$(SFML_INC_DIR) -I../include
+CXXFLAGS := -Wall $(DEBUG) -I$(SFML_INC_DIR)
 LDFLAGS := -Wall $(DEBUG) -L$(SFML_LIB_DIR) -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system -I$(SFML_INC_DIR)
 
 SHELL := /bin/sh
@@ -25,7 +25,7 @@ clean:
 	rm -f $(EXEC)
 
 ctags:
-	ctags --extra=+q --c++-kinds=+cdefgmnpstuvx $(shell find -L ../include/ . -name '*.[ch]*')
+	ctags --extra=+q --c++-kinds=+cdefgmnpstuvx $(shell find -L $(SFML_INC_DIR) . -name '*.[ch]*')
 
 #OBJS depend on OBJDIR only on the first object .o
 $(OBJS): | $(OBJDIR)

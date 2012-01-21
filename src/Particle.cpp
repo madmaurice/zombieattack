@@ -1,5 +1,6 @@
-#include "Particle.hpp"
+#include "Particle.h"
 #include <sstream>
+#include <iostream>
  
 ParticleSystem::ParticleSystem( int width, int height )
 {
@@ -7,8 +8,6 @@ ParticleSystem::ParticleSystem( int width, int height )
 	m_image.Create( width, height, m_transparent );
 	m_sprite.SetImage( m_image );
  
-	m_position.x	= 0.5f * width;
-	m_position.y	= 0.5f * height;
 	m_particleSpeed	= 20.0f;
 	m_dissolve	= false;
 	m_dissolutionRate = 4;
@@ -23,15 +22,17 @@ ParticleSystem::~ParticleSystem()
 	}
 }
  
-void ParticleSystem::fuel( int particles )
+void ParticleSystem::fuel( int particles, sf::Vector2f pos )
 {
+  std::cout << "Position x: "<< pos.x << " y: "<< pos.y << std::endl;
 	float angle;
 	Particle* particle;
 	for( int i = 0; i < particles; i++ )
 	{
 		particle = new Particle();
-		particle->pos.x = m_position.x;
-		particle->pos.y = m_position.y;
+		particle->pos.x = pos.x;
+		particle->pos.y = pos.y;
+
  
 		switch( m_shape )
 		{

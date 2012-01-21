@@ -9,6 +9,7 @@
 #include "Enemy.h"
 #include "Player.h"
 #include "SpatialHash.h"
+#include "Particle.h"
 
 
 //If return a reference that fail because the string is returned is new (so
@@ -82,6 +83,11 @@ int main(int argc, char** argv) {
   int spawn_rate = 1;
   float spawn_time = 0.0;
 
+  ParticleSystem particleSystem(SCREEN_WIDTH, SCREEN_HEIGHT);
+	particleSystem.setDissolve( true );
+	particleSystem.setDissolutionRate( 1 );
+	//particleSystem.setGravity(2.0f, 1.2f );
+
   //Start game loop
   while (App.IsOpened()) {
 
@@ -117,7 +123,7 @@ int main(int argc, char** argv) {
       if (running_time - last_time > 2.0) {
         for (int i = 0; i < spawn_rate; i++) {
 
-          objects.push_back(new Enemy(rand() % (SCREEN_WIDTH-100) + 40, rand() % (SCREEN_HEIGHT-100) + 40));
+          objects.push_back(new Enemy(particleSystem, rand() % (SCREEN_WIDTH-100) + 40, rand() % (SCREEN_HEIGHT-100) + 40));
         }
         last_time = running_time;
       }
@@ -172,23 +178,40 @@ int main(int argc, char** argv) {
 
       App.Draw(player->getSprite());
 
+      //Move and draw all object (except bullets)
       for (unsigned int i = 0; i < objects.size(); ++i) {
 
+        //Aggro is only for enemy
         objects[i]->aggro(*player, ElapsedTime, objects, grid.getNearby(objects[i]), running_time);
         App.Draw(objects[i]->getSprite());
       }
 
+      //Draw then move bullets
       for(unsigned int i = 0; i < player->bullets.size(); ++i) {
         App.Draw(player->bullets[i]->getSprite());
         player->bullets[i]->move(ElapsedTime, objects, grid.getNearby(player->bullets[i]), player->bullets, i);
       }
 
+      //Check if player kill a zombie
       for(unsigned int i = 0; i < objects.size(); ++i) {
         if (!objects[i]->alive(objects, i, running_time))
+        {
           player->kills++;
+
+          //int centerX = objects[i]->getSprite().GetPosition().x;
+          //int centerY = objects[i]->getSprite().GetPosition().y;
+
+          //particleSystem.fuel(200, sf::Vector2f(centerX, centerY));
+        }
       }
 
       grid.clear();
+
+      particleSystem.remove();
+      particleSystem.update();
+      particleSystem.render();
+
+      App.Draw(particleSystem.getSprite());
 
       //Diplay window contents on screen
       App.Display();
