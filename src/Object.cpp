@@ -6,51 +6,52 @@
 
 Object::Object() {
 
-  if (!down[0].LoadFromFile("../resources/sprites/PFront1.png")) {
+  if (!down[0].LoadFromFile("../resources/sprites/Oli_walkFront1.png")) {
+  //if (!down[0].LoadFromFile("../resources/sprites/PFront1.png")) {
     std::cout << "Error loading image" << std::endl;
   }
 
-  if (!down[1].LoadFromFile("../resources/sprites/PFront2.png")) {
+  if (!down[1].LoadFromFile("../resources/sprites/Oli_walkFront2.png")) {
     std::cout << "Error loading image" << std::endl;
   }
 
-  if (!down[2].LoadFromFile("../resources/sprites/PFront3.png")) {
+  if (!down[2].LoadFromFile("../resources/sprites/Oli_walkFront3.png")) {
     std::cout << "Error loading image" << std::endl;
   }
 
-  if (!up[0].LoadFromFile("../resources/sprites/PBack1.png")) {
+  if (!up[0].LoadFromFile("../resources/sprites/Oli_walkBack1.png")) {
     std::cout << "Error loading image" << std::endl;
   }
 
-  if (!up[1].LoadFromFile("../resources/sprites/PBack2.png")) {
+  if (!up[1].LoadFromFile("../resources/sprites/Oli_walkBack2.png")) {
     std::cout << "Error loading image" << std::endl;
   }
 
-  if (!up[2].LoadFromFile("../resources/sprites/PBack3.png")) {
+  if (!up[2].LoadFromFile("../resources/sprites/Oli_walkBack3.png")) {
     std::cout << "Error loading image" << std::endl;
   }
 
-  if (!right[0].LoadFromFile("../resources/sprites/PRight1.png")) {
+  if (!right[0].LoadFromFile("../resources/sprites/Oli_walkRight1.png")) {
     std::cout << "Error loading image" << std::endl;
   }
 
-  if (!right[1].LoadFromFile("../resources/sprites/PRight2.png")) {
+  if (!right[1].LoadFromFile("../resources/sprites/Oli_walkRight2.png")) {
     std::cout << "Error loading image" << std::endl;
   }
 
-  if (!right[2].LoadFromFile("../resources/sprites/PRight3.png")) {
+  if (!right[2].LoadFromFile("../resources/sprites/Oli_walkRight3.png")) {
     std::cout << "Error loading image" << std::endl;
   }
 
-  if (!left[0].LoadFromFile("../resources/sprites/PLeft1.png")) {
+  if (!left[0].LoadFromFile("../resources/sprites/Oli_walkLeft1.png")) {
     std::cout << "Error loading image" << std::endl;
   }
 
-  if (!left[1].LoadFromFile("../resources/sprites/PLeft2.png")) {
+  if (!left[1].LoadFromFile("../resources/sprites/Oli_walkLeft2.png")) {
     std::cout << "Error loading image" << std::endl;
   }
 
-  if (!left[2].LoadFromFile("../resources/sprites/PLeft3.png")) {
+  if (!left[2].LoadFromFile("../resources/sprites/Oli_walkLeft3.png")) {
     std::cout << "Error loading image" << std::endl;
   }
 

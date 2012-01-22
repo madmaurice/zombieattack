@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "SpatialHash.h"
 #include "Particle.h"
+#include "Peak.h"
 
 
 //If return a reference that fail because the string is returned is new (so
@@ -84,9 +85,11 @@ int main(int argc, char** argv) {
   float spawn_time = 0.0;
 
   ParticleSystem particleSystem(SCREEN_WIDTH, SCREEN_HEIGHT);
-	particleSystem.setDissolve( true );
-	particleSystem.setDissolutionRate( 1 );
+  particleSystem.setDissolve( true );
+  particleSystem.setDissolutionRate( 1 );
 	//particleSystem.setGravity(2.0f, 1.2f );
+
+  Peak peaker(App);
 
   //Start game loop
   while (App.IsOpened()) {
@@ -212,6 +215,9 @@ int main(int argc, char** argv) {
       particleSystem.render();
 
       App.Draw(particleSystem.getSprite());
+
+      //Peaking
+      peaker.update();
 
       //Diplay window contents on screen
       App.Display();
