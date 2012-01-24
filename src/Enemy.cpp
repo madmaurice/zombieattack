@@ -1,7 +1,9 @@
+#include <SFML/System.hpp>
 #include <iostream>
 #include <cmath>
 
 #include "Enemy.h"
+#include "EffectSystem.h"
 
 const float Enemy::SFX_DELAY = 10.0;
 const float Enemy::DEATH_DELAY = 0.6;
@@ -169,6 +171,8 @@ bool Enemy::alive(std::vector<Object*> &objects, int me, float running_time)
       posY += height /2;
 
       partSystem.fuel(2000, sf::Vector2f(posX, posY));
+      int numBodyPart = sf::Randomizer::Random(2,7);
+      EffectSystem::GetInstance().bodyPartExplosion(sf::Vector2f(posX, posY), numBodyPart);
     }
     else
       speed /= 2.;

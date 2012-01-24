@@ -11,6 +11,7 @@
 #include "SpatialHash.h"
 #include "Particle.h"
 #include "Peak.h"
+#include "EffectSystem.h"
 
 
 //If return a reference that fail because the string is returned is new (so
@@ -89,7 +90,11 @@ int main(int argc, char** argv) {
   particleSystem.setDissolutionRate( 1 );
 	//particleSystem.setGravity(2.0f, 1.2f );
 
+  //Peaking
   Peak peaker(App);
+
+  //Effect
+  EffectSystem& effectSystem = EffectSystem::GetInstance();
 
   //Start game loop
   while (App.IsOpened()) {
@@ -214,10 +219,14 @@ int main(int argc, char** argv) {
       particleSystem.update();
       particleSystem.render();
 
+      effectSystem.update(App.GetFrameTime());
+      effectSystem.draw(App);
+
       App.Draw(particleSystem.getSprite());
 
       //Peaking
-      peaker.update();
+      //peaker.update();
+
 
       //Diplay window contents on screen
       App.Display();

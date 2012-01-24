@@ -5,7 +5,7 @@ DEBUG := -g
 
 OBJDIR := obj
 
-OBJLIST := Object.o SpatialHash.o Bullet.o Entity.o Enemy.o Player.o Particle.o Main.o 
+OBJLIST := Object.o SpatialHash.o Bullet.o Entity.o Enemy.o Player.o Particle.o Peak.o Resources.o EffectSystem.o Main.o 
 
 OBJS := $(addprefix $(OBJDIR)/,$(OBJLIST))
 
