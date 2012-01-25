@@ -17,21 +17,31 @@ EffectSystem::EffectSystem()
 { 
   //Load all body part images
 
-  _bodyPartImg.push_back(Resources::GetImage("body/body1.png"));
-  _bodyPartImg.push_back(Resources::GetImage("body/body2.png"));
-  _bodyPartImg.push_back(Resources::GetImage("body/body3.png"));
-  _bodyPartImg.push_back(Resources::GetImage("body/body4.png"));
-  _bodyPartImg.push_back(Resources::GetImage("body/body5.png"));
-  _bodyPartImg.push_back(Resources::GetImage("body/body6.png"));
-  _bodyPartImg.push_back(Resources::GetImage("body/body7.png"));
-  _bodyPartImg.push_back(Resources::GetImage("body/body8.png"));
-  _bodyPartImg.push_back(Resources::GetImage("body/body9.png"));
-  _bodyPartImg.push_back(Resources::GetImage("body/body10.png"));
-  _bodyPartImg.push_back(Resources::GetImage("body/body11.png"));
-  _bodyPartImg.push_back(Resources::GetImage("body/body12.png"));
-  _bodyPartImg.push_back(Resources::GetImage("body/body13.png"));
-  _bodyPartImg.push_back(Resources::GetImage("body/body14.png"));
-
+  _bodyPartImg.push_back(&Resources::GetImage("body/body1.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body2.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body3.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body4.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body5.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body6.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body7.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body8.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body9.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body10.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body11.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body12.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body13.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body14.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body15.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body16.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body17.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body18.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body19.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body20.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body21.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body22.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body23.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body24.png"));
+  _bodyPartImg.push_back(&Resources::GetImage("body/body25.png"));
 }
 
 
@@ -45,7 +55,7 @@ void EffectSystem::bodyPartExplosion(const sf::Vector2f& pos, int count)
 {
   for (; count > 0; --count)
 	{
-    _effectList.push_front(BodyPart(pos, _bodyPartImg));
+    _effectList.push_front(BodyPart(*this, pos, _bodyPartImg));
   }
 }
 
@@ -76,6 +86,14 @@ void EffectSystem::draw(sf::RenderTarget& target) const
 	}
 }
 
+void EffectSystem::drawBg(sf::RenderTarget& target) const
+{
+	BgSpriteVect::const_iterator it = _bgSprites.begin();
+	for (; it != _bgSprites.end(); ++it)
+	{
+    target.Draw(*it);
+	}
+}
 
 void EffectSystem::reset()
 {
@@ -87,29 +105,25 @@ void EffectSystem::reset()
 	_effectList.clear();
 }
 
+void EffectSystem::addToBackground(sf::Sprite& sprite)
+{
+  _bgSprites.push_back(sprite);
+}
+
 // Body part explosion
 #define BODY_MIN_LIFETIME      1.0f
 #define BODY_MAX_LIFETIME      4.0f
-#define BODY_MIN_POS_OFFSET    3.0f
-#define BODY_MAX_POS_OFFSET    10.0f
 #define BODY_SPEED_MIN         30.0f
 #define BODY_SPEED_MAX         50.0f
+#define BODY_TO_BG_PROB        75
 
-EffectSystem::BodyPart::BodyPart(const sf::Vector2f pos, ImageVect& availableParts) : _pos(pos) 
+EffectSystem::BodyPart::BodyPart(EffectSystem& eSystem, const sf::Vector2f pos, ImageVect& availableParts) : _effectSytem(eSystem), _pos(pos) 
 {
   //get random available image
   int numBodyImage = availableParts.size();
   int imgIndex = sf::Randomizer::Random(0, numBodyImage -1);
-  _sprite.SetImage(availableParts.at(imgIndex));
+  _sprite.SetImage(*availableParts.at(imgIndex));
   _sprite.Resize(20, 20);
-
-  //make postion a bit random
-  //TODO invert sign
-  //_pos.x = pos.x + sf::Randomizer::Random(BODY_MIN_POS_OFFSET, BODY_MAX_POS_OFFSET);
-  //_pos.y = pos.y + sf::Randomizer::Random(BODY_MIN_POS_OFFSET, BODY_MAX_POS_OFFSET);
-
-  _pos.x = pos.x;
-  _pos.y = pos.y;
 
   _sprite.SetPosition(_pos.x, _pos.y);
 
@@ -171,6 +185,10 @@ bool EffectSystem::BodyPart::update(float frametime)
 void EffectSystem::BodyPart::onComplete()
 {
   //TODO
+  if(sf::Randomizer::Random( 0, 100) <= BODY_TO_BG_PROB)
+  {
+    _effectSytem.addToBackground(_sprite);
+  }
 }
 
 

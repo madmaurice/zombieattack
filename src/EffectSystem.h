@@ -35,11 +35,14 @@ public:
 	void reset();
 
 	void draw(sf::RenderTarget& target) const;
+	void drawBg(sf::RenderTarget& target) const;
 private:
 	EffectSystem();
 	~EffectSystem();
 
-	typedef std::vector<sf::Image> ImageVect;
+  void addToBackground(sf::Sprite& sprite);
+
+	typedef std::vector<sf::Image*> ImageVect;
   ImageVect _bodyPartImg;
 
 	/**
@@ -48,13 +51,14 @@ private:
 	class BodyPart
 	{
 	public:
-		BodyPart(sf::Vector2f pos, ImageVect& availableParts);
+		BodyPart(EffectSystem& eSystem, sf::Vector2f pos, ImageVect& availableParts);
 		~BodyPart() {};
 		bool update(float frametime);
 
 		void draw(sf::RenderTarget& target) const;
     void onComplete();
 	private:
+    EffectSystem& _effectSytem;
     bool _rotateClockwise;
 		sf::Sprite _sprite;
     sf::Vector2f _pos;
@@ -64,6 +68,9 @@ private:
 		float _timer;
 		float _lifetime;
 	};
+
+	typedef std::vector<sf::Sprite> BgSpriteVect;
+  BgSpriteVect _bgSprites;
 
 	typedef std::list<BodyPart> EffectList;
 	EffectList _effectList;

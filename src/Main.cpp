@@ -158,6 +158,8 @@ int main(int argc, char** argv) {
 
       App.Draw(BackgroundSprite);
 
+      effectSystem.drawBg(App);
+
       std::stringstream kill, s2, s3, s4;
       kill << player->kills;
 
