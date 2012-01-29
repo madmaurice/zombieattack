@@ -45,10 +45,11 @@ class Object {
 		void setFacing(Direction d);
 		
 	protected:
-		sf::Image up[3];
-		sf::Image down[3];
-		sf::Image left[3];
-		sf::Image right[3];
+    typedef std::vector<sf::Image*> ImgVect;
+		ImgVect up;
+		ImgVect down;
+		ImgVect left;
+		ImgVect right;
 		sf::Sprite avatar;
 		float speed;
 		int frame;

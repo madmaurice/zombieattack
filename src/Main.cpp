@@ -12,6 +12,7 @@
 #include "Particle.h"
 #include "Peak.h"
 #include "EffectSystem.h"
+#include "Title.h"
 
 
 //If return a reference that fail because the string is returned is new (so
@@ -44,8 +45,6 @@ int main(int argc, char** argv) {
     std::cout << "Error loading music" << std::endl; 
     exit(EXIT_SUCCESS);
   }
-
-  bgm.Play();
 
   std::vector<Object*> objects;
 
@@ -84,6 +83,40 @@ int main(int argc, char** argv) {
 
   int spawn_rate = 1;
   float spawn_time = 0.0;
+
+  //Title stuff
+  Title title(App);
+
+  //Title loop
+  while (App.IsOpened()) {
+
+    //Process events
+    sf::Event Event;
+
+    //Window closed
+    while (App.GetEvent(Event)) 
+    {
+      if(Event.Type == sf::Event::Closed)
+        App.Close();
+
+      //Escape key pressed
+      if((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::Escape))	
+        App.Close();
+    }
+
+    if (title.showTitle())
+    {
+      title.update();
+      App.Display();
+      continue;
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  bgm.Play();
 
   ParticleSystem particleSystem(SCREEN_WIDTH, SCREEN_HEIGHT);
   particleSystem.setDissolve( true );

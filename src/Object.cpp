@@ -2,69 +2,86 @@
 #include <cstdlib>
 
 #include "Object.h"
+#include "Resources.h"
 
 
 Object::Object() {
 
-  if (!down[0].LoadFromFile("../resources/sprites/Oli_walkFront1.png")) {
-  //if (!down[0].LoadFromFile("../resources/sprites/PFront1.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  down.push_back(&Resources::GetImage("Oli_walkFront1.png"));
+  down.push_back(&Resources::GetImage("Oli_walkFront2.png"));
+  down.push_back(&Resources::GetImage("Oli_walkFront3.png"));
 
-  if (!down[1].LoadFromFile("../resources/sprites/Oli_walkFront2.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  up.push_back(&Resources::GetImage("Oli_walkBack1.png"));
+  up.push_back(&Resources::GetImage("Oli_walkBack2.png"));
+  up.push_back(&Resources::GetImage("Oli_walkBack3.png"));
 
-  if (!down[2].LoadFromFile("../resources/sprites/Oli_walkFront3.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  right.push_back(&Resources::GetImage("Oli_walkRight1.png"));
+  right.push_back(&Resources::GetImage("Oli_walkRight2.png"));
+  right.push_back(&Resources::GetImage("Oli_walkRight3.png"));
 
-  if (!up[0].LoadFromFile("../resources/sprites/Oli_walkBack1.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  left.push_back(&Resources::GetImage("Oli_walkLeft1.png"));
+  left.push_back(&Resources::GetImage("Oli_walkLeft2.png"));
+  left.push_back(&Resources::GetImage("Oli_walkLeft3.png"));
 
-  if (!up[1].LoadFromFile("../resources/sprites/Oli_walkBack2.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!down[0].LoadFromFile("../resources/sprites/Oli_walkFront1.png")) {
+  ////if (!down[0].LoadFromFile("../resources/sprites/PFront1.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
-  if (!up[2].LoadFromFile("../resources/sprites/Oli_walkBack3.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!down[1].LoadFromFile("../resources/sprites/Oli_walkFront2.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
-  if (!right[0].LoadFromFile("../resources/sprites/Oli_walkRight1.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!down[2].LoadFromFile("../resources/sprites/Oli_walkFront3.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
-  if (!right[1].LoadFromFile("../resources/sprites/Oli_walkRight2.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!up[0].LoadFromFile("../resources/sprites/Oli_walkBack1.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
-  if (!right[2].LoadFromFile("../resources/sprites/Oli_walkRight3.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!up[1].LoadFromFile("../resources/sprites/Oli_walkBack2.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
-  if (!left[0].LoadFromFile("../resources/sprites/Oli_walkLeft1.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!up[2].LoadFromFile("../resources/sprites/Oli_walkBack3.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
-  if (!left[1].LoadFromFile("../resources/sprites/Oli_walkLeft2.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!right[0].LoadFromFile("../resources/sprites/Oli_walkRight1.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
-  if (!left[2].LoadFromFile("../resources/sprites/Oli_walkLeft3.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!right[1].LoadFromFile("../resources/sprites/Oli_walkRight2.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
+
+  //if (!right[2].LoadFromFile("../resources/sprites/Oli_walkRight3.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
+
+  //if (!left[0].LoadFromFile("../resources/sprites/Oli_walkLeft1.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
+
+  //if (!left[1].LoadFromFile("../resources/sprites/Oli_walkLeft2.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
+
+  //if (!left[2].LoadFromFile("../resources/sprites/Oli_walkLeft3.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
   for(unsigned int i = 0; i < 3; ++i)
-    down[i].CreateMaskFromColor(sf::Color(255, 255, 255));
+    down[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
   for(unsigned int i = 0; i < 3; ++i)
-    up[i].CreateMaskFromColor(sf::Color(255, 255, 255));
+    up[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
   for(unsigned int i = 0; i < 3; ++i)
-    left[i].CreateMaskFromColor(sf::Color(255, 255, 255));
+    left[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
   for(unsigned int i = 0; i < 3; ++i)
-    right[i].CreateMaskFromColor(sf::Color(255, 255, 255));
+    right[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
 
-  avatar.SetImage(down[0]);
+  avatar.SetImage(*down[0]);
   avatar.SetColor(sf::Color(255, 255, 255, 255));
   avatar.SetPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + std::rand()%100);
 
@@ -105,7 +122,7 @@ void Object::move(Direction d, float ElapsedTime, std::vector<Object*> &objects,
 
   if(d == LEFT) 
   {
-    avatar.SetImage(left[frame]);
+    avatar.SetImage(*left[frame]);
     facing = LEFT;
     _x += -velocity;
     if (_x > 50 && available[LEFT])
@@ -113,7 +130,7 @@ void Object::move(Direction d, float ElapsedTime, std::vector<Object*> &objects,
   }
   else if(d == RIGHT) 
   {    
-    avatar.SetImage(right[frame]);
+    avatar.SetImage(*right[frame]);
     facing = RIGHT;
     _x += velocity;
     if (_x + _w < GAME_WIDTH && available[RIGHT])
@@ -121,7 +138,7 @@ void Object::move(Direction d, float ElapsedTime, std::vector<Object*> &objects,
   }
   else if(d == UP) 
   {
-    avatar.SetImage(up[frame]);
+    avatar.SetImage(*up[frame]);
     facing = UP;
     _y += -velocity;
     if (_y > 50 && available[UP]) 
@@ -129,7 +146,7 @@ void Object::move(Direction d, float ElapsedTime, std::vector<Object*> &objects,
   }
   else if(d == DOWN) 
   {
-    avatar.SetImage(down[frame]);
+    avatar.SetImage(*down[frame]);
     facing = DOWN;
     _y += velocity;
     if (_y + _h < GAME_HEIGHT && available[DOWN])

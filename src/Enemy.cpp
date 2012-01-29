@@ -4,6 +4,7 @@
 
 #include "Enemy.h"
 #include "EffectSystem.h"
+#include "Resources.h"
 
 const float Enemy::SFX_DELAY = 10.0;
 const float Enemy::DEATH_DELAY = 0.6;
@@ -11,65 +12,85 @@ const float Enemy::DEATH_DELAY = 0.6;
 Enemy::Enemy(ParticleSystem& pSys, int x, int y, int level) : Entity(level, level), partSystem(pSys)
 {
 
-  if (!down[0].LoadFromFile("../resources/sprites/MFront1.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  down.clear();
+  down.push_back(&Resources::GetImage("MFront1.png"));
+  down.push_back(&Resources::GetImage("MFront2.png"));
+  down.push_back(&Resources::GetImage("MFront3.png"));
 
-  if (!down[1].LoadFromFile("../resources/sprites/MFront2.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  up.clear();
+  up.push_back(&Resources::GetImage("MBack1.png"));
+  up.push_back(&Resources::GetImage("MBack2.png"));
+  up.push_back(&Resources::GetImage("MBack3.png"));
 
-  if (!down[2].LoadFromFile("../resources/sprites/MFront3.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  right.clear();
+  right.push_back(&Resources::GetImage("MRight1.png"));
+  right.push_back(&Resources::GetImage("MRight2.png"));
+  right.push_back(&Resources::GetImage("MRight3.png"));
 
-  if (!up[0].LoadFromFile("../resources/sprites/MBack1.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  left.clear();
+  left.push_back(&Resources::GetImage("MLeft1.png"));
+  left.push_back(&Resources::GetImage("MLeft2.png"));
+  left.push_back(&Resources::GetImage("MLeft3.png"));
 
-  if (!up[1].LoadFromFile("../resources/sprites/MBack2.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!down[0].LoadFromFile("../resources/sprites/MFront1.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
-  if (!up[2].LoadFromFile("../resources/sprites/MBack3.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!down[1].LoadFromFile("../resources/sprites/MFront2.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
-  if (!right[0].LoadFromFile("../resources/sprites/MRight1.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!down[2].LoadFromFile("../resources/sprites/MFront3.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
-  if (!right[1].LoadFromFile("../resources/sprites/MRight2.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!up[0].LoadFromFile("../resources/sprites/MBack1.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
-  if (!right[2].LoadFromFile("../resources/sprites/MRight3.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!up[1].LoadFromFile("../resources/sprites/MBack2.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
-  if (!left[0].LoadFromFile("../resources/sprites/MLeft1.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!up[2].LoadFromFile("../resources/sprites/MBack3.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
-  if (!left[1].LoadFromFile("../resources/sprites/MLeft2.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!right[0].LoadFromFile("../resources/sprites/MRight1.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
-  if (!left[2].LoadFromFile("../resources/sprites/MLeft3.png")) {
-    std::cout << "Error loading image" << std::endl;
-  }
+  //if (!right[1].LoadFromFile("../resources/sprites/MRight2.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
+
+  //if (!right[2].LoadFromFile("../resources/sprites/MRight3.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
+
+  //if (!left[0].LoadFromFile("../resources/sprites/MLeft1.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
+
+  //if (!left[1].LoadFromFile("../resources/sprites/MLeft2.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
+
+  //if (!left[2].LoadFromFile("../resources/sprites/MLeft3.png")) {
+  //  std::cout << "Error loading image" << std::endl;
+  //}
 
   for(unsigned int i = 0; i < 3; ++i)
-    down[i].CreateMaskFromColor(sf::Color(255, 255, 255));
+    down[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
   for(unsigned int i = 0; i < 3; ++i)
-    up[i].CreateMaskFromColor(sf::Color(255, 255, 255));
+    up[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
   for(unsigned int i = 0; i < 3; ++i)
-    left[i].CreateMaskFromColor(sf::Color(255, 255, 255));
+    left[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
   for(unsigned int i = 0; i < 3; ++i)
-    right[i].CreateMaskFromColor(sf::Color(255, 255, 255));
+    right[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
 
 
-  avatar.SetImage(down[0]);
+  avatar.SetImage(*down[0]);
   avatar.SetPosition(x, y); 
   speed *= 1;
   facingRight = true;
