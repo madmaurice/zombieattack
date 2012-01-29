@@ -11,23 +11,18 @@ const float Enemy::DEATH_DELAY = 0.6;
 
 Enemy::Enemy(ParticleSystem& pSys, int x, int y, int level) : Entity(level, level), partSystem(pSys)
 {
-
-  down.clear();
   down.push_back(&Resources::GetImage("MFront1.png"));
   down.push_back(&Resources::GetImage("MFront2.png"));
   down.push_back(&Resources::GetImage("MFront3.png"));
 
-  up.clear();
   up.push_back(&Resources::GetImage("MBack1.png"));
   up.push_back(&Resources::GetImage("MBack2.png"));
   up.push_back(&Resources::GetImage("MBack3.png"));
 
-  right.clear();
   right.push_back(&Resources::GetImage("MRight1.png"));
   right.push_back(&Resources::GetImage("MRight2.png"));
   right.push_back(&Resources::GetImage("MRight3.png"));
 
-  left.clear();
   left.push_back(&Resources::GetImage("MLeft1.png"));
   left.push_back(&Resources::GetImage("MLeft2.png"));
   left.push_back(&Resources::GetImage("MLeft3.png"));
@@ -91,6 +86,7 @@ Enemy::Enemy(ParticleSystem& pSys, int x, int y, int level) : Entity(level, leve
 
 
   avatar.SetImage(*down[0]);
+  avatar.SetColor(sf::Color(255, 255, 255, 255));
   avatar.SetPosition(x, y); 
   speed *= 1;
   facingRight = true;

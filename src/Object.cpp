@@ -7,22 +7,6 @@
 
 Object::Object() {
 
-  down.push_back(&Resources::GetImage("Oli_walkFront1.png"));
-  down.push_back(&Resources::GetImage("Oli_walkFront2.png"));
-  down.push_back(&Resources::GetImage("Oli_walkFront3.png"));
-
-  up.push_back(&Resources::GetImage("Oli_walkBack1.png"));
-  up.push_back(&Resources::GetImage("Oli_walkBack2.png"));
-  up.push_back(&Resources::GetImage("Oli_walkBack3.png"));
-
-  right.push_back(&Resources::GetImage("Oli_walkRight1.png"));
-  right.push_back(&Resources::GetImage("Oli_walkRight2.png"));
-  right.push_back(&Resources::GetImage("Oli_walkRight3.png"));
-
-  left.push_back(&Resources::GetImage("Oli_walkLeft1.png"));
-  left.push_back(&Resources::GetImage("Oli_walkLeft2.png"));
-  left.push_back(&Resources::GetImage("Oli_walkLeft3.png"));
-
   //if (!down[0].LoadFromFile("../resources/sprites/Oli_walkFront1.png")) {
   ////if (!down[0].LoadFromFile("../resources/sprites/PFront1.png")) {
   //  std::cout << "Error loading image" << std::endl;
@@ -71,22 +55,6 @@ Object::Object() {
   //if (!left[2].LoadFromFile("../resources/sprites/Oli_walkLeft3.png")) {
   //  std::cout << "Error loading image" << std::endl;
   //}
-
-  for(unsigned int i = 0; i < 3; ++i)
-    down[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
-  for(unsigned int i = 0; i < 3; ++i)
-    up[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
-  for(unsigned int i = 0; i < 3; ++i)
-    left[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
-  for(unsigned int i = 0; i < 3; ++i)
-    right[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
-
-  avatar.SetImage(*down[0]);
-  avatar.SetColor(sf::Color(255, 255, 255, 255));
-  avatar.SetPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + std::rand()%100);
-
-  // Resize the sprite
-  // avatar.Resize(72, 70);
 
   // Flip the sprite on X and Y axis
   // avatar.FlipX(true);
@@ -154,7 +122,7 @@ void Object::move(Direction d, float ElapsedTime, std::vector<Object*> &objects,
   }  
 }
 
-sf::Sprite Object::getSprite() {
+sf::Sprite& Object::getSprite() {
   return avatar;
 }
 

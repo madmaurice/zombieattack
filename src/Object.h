@@ -40,7 +40,7 @@ class Object {
 		int* collisions(std::vector<Object*> objects, std::vector<int> possible);
 
 		Type getType();
-		sf::Sprite getSprite();
+		sf::Sprite& getSprite();
 		Direction getFacing();
 		void setFacing(Direction d);
 		

@@ -1,11 +1,40 @@
 #include <iostream>
 
 #include "Player.h"
+#include "Resources.h"
 
 const float Player::SHOOT_DELAY = 0.25;
 
 Player::Player() : Entity(10000, 1) {
   
+  down.push_back(&Resources::GetImage("Oli_walkFront1.png"));
+  down.push_back(&Resources::GetImage("Oli_walkFront2.png"));
+  down.push_back(&Resources::GetImage("Oli_walkFront3.png"));
+
+  up.push_back(&Resources::GetImage("Oli_walkBack1.png"));
+  up.push_back(&Resources::GetImage("Oli_walkBack2.png"));
+  up.push_back(&Resources::GetImage("Oli_walkBack3.png"));
+
+  right.push_back(&Resources::GetImage("Oli_walkRight1.png"));
+  right.push_back(&Resources::GetImage("Oli_walkRight2.png"));
+  right.push_back(&Resources::GetImage("Oli_walkRight3.png"));
+
+  left.push_back(&Resources::GetImage("Oli_walkLeft1.png"));
+  left.push_back(&Resources::GetImage("Oli_walkLeft2.png"));
+  left.push_back(&Resources::GetImage("Oli_walkLeft3.png"));
+
+  for(unsigned int i = 0; i < 3; ++i)
+    down[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
+  for(unsigned int i = 0; i < 3; ++i)
+    up[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
+  for(unsigned int i = 0; i < 3; ++i)
+    left[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
+  for(unsigned int i = 0; i < 3; ++i)
+    right[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
+
+  avatar.SetImage(*down[0]);
+  avatar.SetColor(sf::Color(255, 255, 255, 255));
+
   type = FRIEND;
 
   int _x = SCREEN_WIDTH/2-avatar.GetSize().x/2;
