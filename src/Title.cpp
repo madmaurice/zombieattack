@@ -13,6 +13,13 @@ Title::Title(sf::RenderWindow& window) : _window(window)
     std::cout << "Error loading image title.png" << std::endl;
   }
 
+  if (!_bgTitleImg.LoadFromFile("../resources/backgrounds/titleName.png")) {
+    std::cout << "Error loading image titleName.png" << std::endl;
+  }
+  _bgTitleSprite.SetImage(_bgTitleImg);
+  _bgTitleSprite.Resize(_bgTitleImg.GetWidth() * ZOOM_LEVEL, _bgTitleImg.GetHeight() * ZOOM_LEVEL);
+  _bgTitleSprite.SetPosition(120, 40);
+
   if (!_bgMusic.OpenFromFile("../resources/music/Title_Part_1.ogg")) {
     std::cout << "Error loading music Title 1" << std::endl; 
   }
@@ -51,11 +58,14 @@ void Title::update()
       //TODO play music
       _state = SCROLLING;
       _bgMusic.Play();
+      _window.Draw(_bgSprite);
       break;
     case SCROLLING:
       scroll();
       if (scrollingDone())
         _state = WAIT_TITLE;
+
+      _window.Draw(_bgSprite);
       break;
     case WAIT_TITLE:
       _state = END;
@@ -64,12 +74,14 @@ void Title::update()
         std::cout << "Error loading music Title 2" << std::endl; 
       }
       _bgMusic.Play();
+      _window.Draw(_bgSprite);
       break;
     case END:
+      _window.Draw(_bgSprite);
+      _window.Draw(_bgTitleSprite);
       break;
   }
 
-  _window.Draw(_bgSprite);
 }
 
 void Title::processEvent()

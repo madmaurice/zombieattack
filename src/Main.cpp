@@ -106,6 +106,7 @@ int main(int argc, char** argv) {
 
     if (title.showTitle())
     {
+      App.Clear();
       title.update();
       App.Display();
       continue;

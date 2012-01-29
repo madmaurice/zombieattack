@@ -32,6 +32,8 @@ class Title
 
   //Display
   sf::RenderWindow& _window;
+  sf::Image _bgTitleImg;
+  sf::Sprite _bgTitleSprite;
   sf::Image _bgImage;
   sf::Sprite _bgSprite;
   int _bgRectTop;
