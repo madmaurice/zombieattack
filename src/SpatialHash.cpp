@@ -1,3 +1,5 @@
+#include <iostream>
+#include <stdexcept>
 #include "SpatialHash.h"
 
 //Hash class using a vector of int vectors
@@ -75,14 +77,39 @@ std::vector<int> SpatialHash::hashCodes(Object* object) {
   
   return hash_codes;
 }
+
 std::vector<int> SpatialHash::getNearby(Object *subject) {
   
   std::vector<int> hash_codes = hashCodes(subject);
   std::vector<int> nearby; 
 
 	for (unsigned int i = 0; i < hash_codes.size(); ++i)
-		for(unsigned int j = 0; j < bucket[hash_codes[i]].size(); ++j)
-			nearby.push_back(bucket[hash_codes[i]][j]);
+  {
+    //i is sometimes out of range
+    try {
+      std::vector<int>& buckVect = bucket.at(hash_codes[i]); 
+
+      try 
+      {
+        for(unsigned int j = 0; j < buckVect.size(); ++j)
+        {
+            nearby.push_back(buckVect.at(j));
+        }
+      }
+      catch (std::out_of_range& e) {
+        std::cout << "EXCEPTION: BuckVect j out of range: " << e.what() << std::endl;
+        continue;
+      }
+    }
+    catch (std::out_of_range& e) {
+      std::cout << "EXCEPTION: BuckVect i out of range: " << e.what() << std::endl;
+      continue;
+    }
+    catch (std::exception& e) {
+      std::cout << "EXCEPTION: unknown: " << e.what() << std::endl;
+      continue;
+    }
+  }
 
 	sort(nearby.begin(), nearby.end());
 	nearby.erase(unique(nearby.begin(), nearby.end()), nearby.end());
