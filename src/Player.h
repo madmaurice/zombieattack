@@ -12,7 +12,8 @@ class Player : public Entity {
   Player();
   ~Player();
   
-  void drawRage(sf::RenderWindow& window);
+  void update(sf::RenderWindow& window);
+  void enableRage();
   void shoot(float ElapsedTime);
   std::vector<Bullet*> bullets;
   bool enemy(Object *subject);
@@ -24,10 +25,13 @@ class Player : public Entity {
  private:
 
   void addRage(unsigned int num);
+  void updateRageMode();
+
+  bool rageMode;
 
   const sf::Font& font;
   sf::String rageStr;
-  unsigned int rage;
+  int rage;
   int kills;
   int inventory;
   sf::Clock rageClock;
@@ -39,9 +43,11 @@ class Player : public Entity {
   sf::SoundBuffer gun_wav;
   float last_shot;
   static const float SHOOT_DELAY;
-  static const unsigned int MAX_RAGE;
-  static const unsigned int KILL_RAGE;
-  static const unsigned int HIT_RAGE;
+  static const int MAX_RAGE;
+  static const int KILL_RAGE;
+  static const int HIT_RAGE;
+  static const int RAGE_DECREASE;
+  static const float RAGE_DECREASE_DELAY;
   static const float HIT_DELAY;
 };
 

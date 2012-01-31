@@ -180,6 +180,10 @@ int main(int argc, char** argv) {
       if(App.GetInput().IsKeyDown(sf::Key::Space))
         player->shoot(running_time);
 
+      //Rage
+      if(App.GetInput().IsKeyDown(sf::Key::S))
+        player->enableRage();
+
       //Move the sprite
       if(App.GetInput().IsKeyDown(sf::Key::Left))
         player->move(LEFT, ElapsedTime, objects, grid.getNearby(player));
@@ -220,7 +224,7 @@ int main(int argc, char** argv) {
 
       Score.SetText("Score: " + score_string);
 
-      player->drawRage(App);
+      player->update(App);
       App.Draw(player->getSprite());
 
       //Move and draw all object (except bullets)

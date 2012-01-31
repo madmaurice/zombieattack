@@ -4,10 +4,12 @@
 #include "Resources.h"
 
 const float Player::SHOOT_DELAY = 0.25;
-const unsigned int Player::MAX_RAGE = 100;
-const unsigned int Player::KILL_RAGE = 2;
-const unsigned int Player::HIT_RAGE = 5;
+const int Player::MAX_RAGE = 100;
+const int Player::KILL_RAGE = 2;
+const int Player::HIT_RAGE = 5;
 const float Player::HIT_DELAY = 2;
+const int Player::RAGE_DECREASE = 5;
+const float Player::RAGE_DECREASE_DELAY = 1;
 
 Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")) {
   
@@ -69,6 +71,8 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")) {
 
   rage = 0;
   kills = 0;
+
+  rageMode = false;
 
   rageStr.SetFont(font);
   rageStr.SetColor(sf::Color(255, 255, 255));
@@ -136,8 +140,24 @@ void Player::shoot(float running_time) {
   }
 }
 
-void Player::drawRage(sf::RenderWindow& window)
+void Player::enableRage()
 {
+  if (rage >= MAX_RAGE && rageMode == false)
+  {
+    rageMode = true;
+    rageClock.Reset();
+    //TODO animation + sound
+  }
+}
+
+void Player::update(sf::RenderWindow& window)
+{
+  //Need to decrease rage?
+  if (rageMode)
+  {
+    updateRageMode();
+  }
+
   rageMeter = sf::Shape::Rectangle(0, 0, rage, 15, sf::Color::Red); 
   rageMeter.SetPosition(25,75);
   window.Draw(rageMeterBox);
@@ -152,14 +172,16 @@ void Player::takeDamage(std::vector<Object*> objects, int me, int damage) {
     sound.SetVolume(200.f);
     sound.Play();
   }
-  health -= damage;
-
-  if (rageClock.GetElapsedTime() >= HIT_DELAY)
+  if (!rageMode)
   {
-    rageClock.Reset();
-    addRage(HIT_RAGE);
-  }
+    health -= damage;
 
+    if (rageClock.GetElapsedTime() >= HIT_DELAY)
+    {
+      rageClock.Reset();
+      addRage(HIT_RAGE);
+    }
+  }
 }
 
 void Player::addKill(int num)
@@ -173,11 +195,28 @@ bool Player::enemy(Object *subject)
     return false;
 }
 
+void Player::updateRageMode()
+{
+  if (rageClock.GetElapsedTime() >= RAGE_DECREASE_DELAY)
+  {
+    rage -= RAGE_DECREASE;
+    if (rage < 0)
+    {
+      rage = 0;
+      rageMode = false;
+    }
+
+    rageClock.Reset();
+  }
+}
+
 void Player::addRage(unsigned int num)
 {
-  rage += num;
+  if (!rageMode)
+  {
+    rage += num;
 
-  if (rage > MAX_RAGE)
-    rage = MAX_RAGE;
-
+    if (rage > MAX_RAGE)
+      rage = MAX_RAGE;
+  }
 }
