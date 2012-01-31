@@ -24,7 +24,6 @@ ParticleSystem::~ParticleSystem()
  
 void ParticleSystem::fuel( int particles, sf::Vector2f pos )
 {
-  std::cout << "Position x: "<< pos.x << " y: "<< pos.y << std::endl;
 	float angle;
 	Particle* particle;
 	for( int i = 0; i < particles; i++ )

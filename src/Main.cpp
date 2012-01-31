@@ -195,7 +195,7 @@ int main(int argc, char** argv) {
       effectSystem.drawBg(App);
 
       std::stringstream kill, s2, s3, s4;
-      kill << player->kills;
+      kill << player->getKill();
 
       KillCount.SetText("Kills: " + kill.str());
       App.Draw(KillCount);
@@ -214,12 +214,13 @@ int main(int argc, char** argv) {
       HP.SetText("HP: " + hp_string);
       App.Draw(HP);
 
-      s4 << player->kills + (int)running_time;
+      s4 << player->getKill() + (int)running_time;
       std::string score_string;
       s4 >> score_string;
 
       Score.SetText("Score: " + score_string);
 
+      player->drawRage(App);
       App.Draw(player->getSprite());
 
       //Move and draw all object (except bullets)
@@ -240,7 +241,7 @@ int main(int argc, char** argv) {
       for(unsigned int i = 0; i < objects.size(); ++i) {
         if (!objects[i]->alive(objects, i, running_time))
         {
-          player->kills++;
+          player->addKill();
 
           //int centerX = objects[i]->getSprite().GetPosition().x;
           //int centerY = objects[i]->getSprite().GetPosition().y;

@@ -120,6 +120,7 @@ void Object::move(Direction d, float ElapsedTime, std::vector<Object*> &objects,
     if (_y + _h < GAME_HEIGHT && available[DOWN])
       avatar.Move(0, velocity);
   }  
+  delete[] available;
 }
 
 sf::Sprite& Object::getSprite() {

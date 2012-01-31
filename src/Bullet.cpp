@@ -65,4 +65,6 @@ void Bullet::move(float ElapsedTime, std::vector<Object*> &objects, std::vector<
       bullets.erase(bullets.begin() + me);
     }
   }  
+  
+  delete[] available;
 }

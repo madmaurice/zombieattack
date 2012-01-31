@@ -4,8 +4,12 @@
 #include "Resources.h"
 
 const float Player::SHOOT_DELAY = 0.25;
+const unsigned int Player::MAX_RAGE = 100;
+const unsigned int Player::KILL_RAGE = 2;
+const unsigned int Player::HIT_RAGE = 5;
+const float Player::HIT_DELAY = 2;
 
-Player::Player() : Entity(10000, 1) {
+Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")) {
   
   down.push_back(&Resources::GetImage("Oli_walkFront1.png"));
   down.push_back(&Resources::GetImage("Oli_walkFront2.png"));
@@ -62,7 +66,24 @@ Player::Player() : Entity(10000, 1) {
     std::cout << "Error loading sfx" << std::endl; 
     exit(EXIT_SUCCESS);
   }
+
+  rage = 0;
   kills = 0;
+
+  rageStr.SetFont(font);
+  rageStr.SetColor(sf::Color(255, 255, 255));
+  rageStr.SetSize(12.f);
+  rageStr.SetPosition(45, 75);
+  rageStr.SetText("R A G E");
+
+  rageClock.Reset();
+
+  //Init rage meter
+  rageMeterBox = sf::Shape::Rectangle(0, 0, 100, 15, sf::Color::Black, 2, sf::Color::Black); 
+  rageMeterBox.SetPosition(25,75);
+  rageMeterBox.EnableFill(false);
+  rageMeter = sf::Shape::Rectangle(0, 0, rage, 15, sf::Color::Red); 
+  rageMeter.SetPosition(25,75);
 }
 
 Player::~Player() {}
@@ -115,6 +136,14 @@ void Player::shoot(float running_time) {
   }
 }
 
+void Player::drawRage(sf::RenderWindow& window)
+{
+  rageMeter = sf::Shape::Rectangle(0, 0, rage, 15, sf::Color::Red); 
+  rageMeter.SetPosition(25,75);
+  window.Draw(rageMeterBox);
+  window.Draw(rageMeter);
+  window.Draw(rageStr);
+}
 
 void Player::takeDamage(std::vector<Object*> objects, int me, int damage) {
 
@@ -124,9 +153,31 @@ void Player::takeDamage(std::vector<Object*> objects, int me, int damage) {
     sound.Play();
   }
   health -= damage;
+
+  if (rageClock.GetElapsedTime() >= HIT_DELAY)
+  {
+    rageClock.Reset();
+    addRage(HIT_RAGE);
+  }
+
+}
+
+void Player::addKill(int num)
+{
+  kills+= num;
+  addRage(KILL_RAGE);
 }
 
 bool Player::enemy(Object *subject)
 {
     return false;
+}
+
+void Player::addRage(unsigned int num)
+{
+  rage += num;
+
+  if (rage > MAX_RAGE)
+    rage = MAX_RAGE;
+
 }
