@@ -239,6 +239,7 @@ int main(int argc, char** argv) {
       for(unsigned int i = 0; i < player->bullets.size(); ++i) {
         App.Draw(player->bullets[i]->getSprite());
         player->bullets[i]->move(ElapsedTime, objects, grid.getNearby(player->bullets[i]), player->bullets, i);
+        player->bullets[i]->drawEdge(App);
       }
 
       //Check if player kill a zombie

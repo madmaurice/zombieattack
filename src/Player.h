@@ -38,7 +38,7 @@ class Player : public Entity {
   sf::Shape rageMeter;
   sf::Shape rageMeterBox;
   sf::Image bullet_pic;
-  sf::Sprite bullet_sprite;
+  sf::Image beam_pic;
   sf::SoundBuffer bite_wav;
   sf::SoundBuffer gun_wav;
   float last_shot;

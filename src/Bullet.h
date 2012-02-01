@@ -4,11 +4,12 @@
 class Bullet : public Entity {
 
  public:
-  Bullet(sf::Sprite adjusted_sprite);
+  Bullet(sf::Sprite adjusted_sprite, bool isBeam = true);
   ~Bullet();
 
   void move(float ElapsedTime, std::vector<Object*> &objects, std::vector<int> possible, std::vector<Bullet*> &bullets, int me);
+  void drawEdge(sf::RenderWindow& window);
   
  protected:
-  sf::Image bullet_pic;
+  bool _isBeam;
 };
