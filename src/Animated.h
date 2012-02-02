@@ -11,6 +11,7 @@
 class Animated
 {
 public:
+	Animated(sf::Sprite& sprite);
 	Animated(sf::Sprite& sprite, const Animation& animation);
 
 	void Reset();
@@ -18,8 +19,9 @@ public:
 	/**
 	 * Update subrect of the animated sprite
 	 * @param frametime: Time of current frame
+	 * @return bool: false if animation is finish
 	 */
-	void Update(float frametime);
+	bool Update(float frametime);
 
 
 	void SetAnimation(const Animation& animation);

@@ -19,6 +19,11 @@ public:
 	inline float GetDelay() const
 	{ return delay_; }
 
+  void SetLoop(bool loop);
+
+	inline bool GetLoop() const
+	{ return loop_; }
+
 	float GetDuration() const;
 
 	/**
@@ -50,6 +55,7 @@ private:
 	std::vector<sf::IntRect> subrects_;
 	const sf::Image* image_;
 	float delay_;
+  bool loop_;
 };
 
 #endif // ANIMATION_HPP

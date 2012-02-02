@@ -2,6 +2,7 @@
 
 #include "Player.h"
 #include "Resources.h"
+#include "Screen.h"
 
 const float Player::SHOOT_DELAY = 0.25;
 const int Player::MAX_RAGE = 100;
@@ -11,7 +12,7 @@ const float Player::HIT_DELAY = 2;
 const int Player::RAGE_DECREASE = 5;
 const float Player::RAGE_DECREASE_DELAY = 1;
 
-Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")) {
+Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), death(death_sprite){
   
   down.push_back(&Resources::GetImage("Oli_walkFront1.png"));
   down.push_back(&Resources::GetImage("Oli_walkFront2.png"));
@@ -73,6 +74,11 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")) {
     exit(EXIT_SUCCESS);
   }
 
+  if (!death_sheet.LoadFromFile("../resources/sprites/Death.png")) {
+    std::cout << "Error loading sfx" << std::endl; 
+    exit(EXIT_SUCCESS);
+  }
+
   rage = 0;
   kills = 0;
 
@@ -92,6 +98,23 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")) {
   rageMeterBox.EnableFill(false);
   rageMeter = sf::Shape::Rectangle(0, 0, rage, 15, sf::Color::Red); 
   rageMeter.SetPosition(25,75);
+
+  //Set up animation
+  int width = 113;
+  int height = 113;
+
+  deathAnim.SetImage(death_sheet);
+  deathAnim.AddFrame(sf::IntRect(1, 1, width, height));
+  deathAnim.AddFrame(sf::IntRect(115, 1, 115+width, height));
+  deathAnim.AddFrame(sf::IntRect(229, 1, 229+width, height));
+  deathAnim.AddFrame(sf::IntRect(343, 1, 343+width, height));
+  deathAnim.AddFrame(sf::IntRect(457, 1, 457+width, height));
+  deathAnim.AddFrame(sf::IntRect(571, 1, 571+width, height));
+  deathAnim.SetDelay(0.15f);
+
+  death.SetAnimation(deathAnim);
+  death_sprite.SetPosition(SCREEN_WIDTH/4, SCREEN_HEIGHT/4);
+  death_sprite.Resize(width * 3, height * 3);
 }
 
 Player::~Player() {}
@@ -236,4 +259,13 @@ void Player::addRage(unsigned int num)
     if (rage > MAX_RAGE)
       rage = MAX_RAGE;
   }
+}
+
+bool Player::playDeath(sf::RenderWindow& window)
+{
+  window.Clear();
+  bool result = death.Update(window.GetFrameTime());
+  window.Draw(death_sprite);
+
+  return result;
 }

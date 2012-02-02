@@ -5,6 +5,8 @@
 
 #include "Entity.h"
 #include "Bullet.h"
+#include "Animated.h"
+#include "Animation.h"
 
 class Player : public Entity {
 
@@ -21,6 +23,7 @@ class Player : public Entity {
   void addKill(int num = 1);
   inline int getKill() const
   { return kills; }
+  bool playDeath(sf::RenderWindow& window);
 
  private:
 
@@ -49,6 +52,12 @@ class Player : public Entity {
   static const int RAGE_DECREASE;
   static const float RAGE_DECREASE_DELAY;
   static const float HIT_DELAY;
+
+  //Death
+  sf::Image death_sheet;
+  sf::Sprite death_sprite;
+  Animation deathAnim;
+  Animated death;
 };
 
 

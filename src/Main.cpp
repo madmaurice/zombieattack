@@ -269,12 +269,15 @@ int main(int argc, char** argv) {
       //Peaking
       //peaker.update();
 
-
       //Diplay window contents on screen
       App.Display();
     }
     else {
-      if (game_over)  {
+      if (player->playDeath(App))
+      {
+        App.Display();
+      }
+      else if (game_over)  {
         App.Clear();
         App.Draw(GameOverString);
         App.Draw(Timer);

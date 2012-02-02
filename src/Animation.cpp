@@ -5,6 +5,7 @@ Animation::Animation()
 {
 	image_ = NULL;
 	delay_ = 1.0f;
+  loop_ = false;
 }
 
 
@@ -29,6 +30,12 @@ void Animation::AddFrame(int left, int top, int width, int height)
 void Animation::SetDelay(float delay)
 {
 	delay_ = delay;
+}
+
+
+void Animation::SetLoop(bool loop)
+{
+	loop_ = loop;
 }
 
 
