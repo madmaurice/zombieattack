@@ -12,7 +12,7 @@ const float Player::HIT_DELAY = 2;
 const int Player::RAGE_DECREASE = 5;
 const float Player::RAGE_DECREASE_DELAY = 1;
 
-Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), death(death_sprite){
+Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), saiyan(saiyanSprite), death(death_sprite){
   
   down.push_back(&Resources::GetImage("Oli_walkFront1.png"));
   down.push_back(&Resources::GetImage("Oli_walkFront2.png"));
@@ -74,8 +74,13 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), 
     exit(EXIT_SUCCESS);
   }
 
+  if (!saiyanSheet.LoadFromFile("../resources/sprites/BurstSheet.png")) {
+    std::cout << "Error loading burst sheet" << std::endl; 
+    exit(EXIT_SUCCESS);
+  }
+
   if (!death_sheet.LoadFromFile("../resources/sprites/Death.png")) {
-    std::cout << "Error loading sfx" << std::endl; 
+    std::cout << "Error loading death sheet" << std::endl; 
     exit(EXIT_SUCCESS);
   }
 
@@ -100,8 +105,53 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), 
   rageMeter.SetPosition(25,75);
 
   //Set up animation
-  int width = 113;
-  int height = 113;
+  int width = 32;
+  int height = 49;
+  isAnimated = false;
+
+  //Saiyan animation
+  saiyanAnim.SetImage(saiyanSheet);
+  
+  //1
+  saiyanAnim.AddFrame(sf::IntRect(40, 170, 40+width, 170+height));
+
+  //2
+  width = 34;
+  height = 48;
+  saiyanAnim.AddFrame(sf::IntRect(0, 170, width, 170+height));
+
+  //3
+  width = 41;
+  height = 69;
+  saiyanAnim.AddFrame(sf::IntRect(94, 160, 94+width, 160+height));
+
+  //4
+  width = 71;
+  height = 69;
+  saiyanAnim.AddFrame(sf::IntRect(94, 86, 94+width, 69+height));
+
+  //5
+  width = 89;
+  height = 78;
+  saiyanAnim.AddFrame(sf::IntRect(0, 86, width, 86+height));
+
+  //6
+  width = 103;
+  height = 81;
+  saiyanAnim.AddFrame(sf::IntRect(0, 0, width, height));
+
+  //7
+  width = 48;
+  height = 71;
+  saiyanAnim.AddFrame(sf::IntRect(108, 0, 108+width, height));
+  saiyanAnim.SetDelay(0.15f);
+
+  saiyan.SetAnimation(saiyanAnim);
+
+
+  //Death animation
+  width = 113;
+  height = 113;
 
   deathAnim.SetImage(death_sheet);
   deathAnim.AddFrame(sf::IntRect(1, 1, width, height));
@@ -119,7 +169,7 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), 
 
 Player::~Player() {}
 
-void Player::shoot(float running_time) {
+void Player::shoot(float elapsedTime) {
 
   sf::Sprite bullet_sprite;
   if (rageMode)
@@ -131,7 +181,7 @@ void Player::shoot(float running_time) {
     bullet_sprite.SetImage(bullet_pic);
   }
 
-  if ((running_time - last_shot) > SHOOT_DELAY) {
+  if (last_shot >= SHOOT_DELAY) {
 
     int _x = this->getSprite().GetPosition().x;
     int _y = this->getSprite().GetPosition().y;
@@ -176,7 +226,11 @@ void Player::shoot(float running_time) {
     sound.SetBuffer(gun_wav); 
     sound.SetVolume(50.f);
     sound.Play();
-    last_shot = running_time;
+    last_shot = 0;
+  }
+  else
+  {
+    last_shot += elapsedTime;
   }
 }
 
@@ -184,9 +238,34 @@ void Player::enableRage()
 {
   if (rage >= MAX_RAGE && rageMode == false)
   {
+    isAnimated = true;
     rageMode = true;
     rageClock.Reset();
     //TODO animation + sound
+  }
+}
+
+void Player::handleInput(sf::RenderWindow& App, float ElapsedTime, std::vector<Object*>& objects, SpatialHash& grid)
+{
+  if (!isAnimated)
+  {
+    //Shooting
+    if(App.GetInput().IsKeyDown(sf::Key::Space))
+      shoot(ElapsedTime);
+
+    //Rage
+    if(App.GetInput().IsKeyDown(sf::Key::S))
+      enableRage();
+
+    //Move the sprite
+    if(App.GetInput().IsKeyDown(sf::Key::Left))
+      move(LEFT, ElapsedTime, objects, grid.getNearby(this));
+    if(App.GetInput().IsKeyDown(sf::Key::Right))
+      move(RIGHT, ElapsedTime, objects, grid.getNearby(this));
+    if(App.GetInput().IsKeyDown(sf::Key::Up))
+      move(UP, ElapsedTime, objects, grid.getNearby(this));
+    if(App.GetInput().IsKeyDown(sf::Key::Down))
+      move(DOWN, ElapsedTime, objects, grid.getNearby(this));
   }
 }
 
@@ -196,6 +275,20 @@ void Player::update(sf::RenderWindow& window)
   if (rageMode)
   {
     updateRageMode();
+  }
+}
+
+void Player::draw(sf::RenderWindow& window)
+{
+  if (isAnimated)
+  {
+    isAnimated = saiyan.Update(window.GetFrameTime());
+    saiyanSprite.SetPosition(avatar.GetPosition());
+    window.Draw(saiyanSprite);
+  }
+  else
+  {
+    window.Draw(avatar);
   }
 
   rageMeter = sf::Shape::Rectangle(0, 0, rage, 15, sf::Color::Red); 
@@ -268,4 +361,9 @@ bool Player::playDeath(sf::RenderWindow& window)
   window.Draw(death_sprite);
 
   return result;
+}
+
+bool Player::isPlayer()
+{
+  return true;
 }

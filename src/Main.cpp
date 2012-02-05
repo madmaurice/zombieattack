@@ -176,26 +176,12 @@ int main(int argc, char** argv) {
       float ElapsedTime = App.GetFrameTime();
       running_time += ElapsedTime;
 
-      //Shooting
-      if(App.GetInput().IsKeyDown(sf::Key::Space))
-        player->shoot(running_time);
-
-      //Rage
-      if(App.GetInput().IsKeyDown(sf::Key::S))
-        player->enableRage();
-
-      //Move the sprite
-      if(App.GetInput().IsKeyDown(sf::Key::Left))
-        player->move(LEFT, ElapsedTime, objects, grid.getNearby(player));
-      if(App.GetInput().IsKeyDown(sf::Key::Right))
-        player->move(RIGHT, ElapsedTime, objects, grid.getNearby(player));
-      if(App.GetInput().IsKeyDown(sf::Key::Up))
-        player->move(UP, ElapsedTime, objects, grid.getNearby(player));
-      if(App.GetInput().IsKeyDown(sf::Key::Down))
-        player->move(DOWN, ElapsedTime, objects, grid.getNearby(player));
+      //Handle input
+      player->handleInput(App, ElapsedTime, objects, grid);
 
       App.Draw(BackgroundSprite);
 
+      //Draw body part over floor
       effectSystem.drawBg(App);
 
       std::stringstream kill, s2, s3, s4;
@@ -225,14 +211,17 @@ int main(int argc, char** argv) {
       Score.SetText("Score: " + score_string);
 
       player->update(App);
-      App.Draw(player->getSprite());
+      player->draw(App);
 
       //Move and draw all object (except bullets)
       for (unsigned int i = 0; i < objects.size(); ++i) {
 
         //Aggro is only for enemy
         objects[i]->aggro(*player, ElapsedTime, objects, grid.getNearby(objects[i]), running_time);
-        App.Draw(objects[i]->getSprite());
+
+        //Don't draw player here
+        if (!objects[i]->isPlayer())
+          App.Draw(objects[i]->getSprite());
       }
 
       //Draw then move bullets
@@ -247,11 +236,6 @@ int main(int argc, char** argv) {
         if (!objects[i]->alive(objects, i, running_time))
         {
           player->addKill();
-
-          //int centerX = objects[i]->getSprite().GetPosition().x;
-          //int centerY = objects[i]->getSprite().GetPosition().y;
-
-          //particleSystem.fuel(200, sf::Vector2f(centerX, centerY));
         }
       }
 

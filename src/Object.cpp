@@ -196,3 +196,8 @@ bool Object::alive(std::vector<Object*> &objects, int me, float death_time)
 {
   return true;
 }
+
+bool Object::isPlayer()
+{
+  return false;
+}

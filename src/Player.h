@@ -7,6 +7,7 @@
 #include "Bullet.h"
 #include "Animated.h"
 #include "Animation.h"
+#include "SpatialHash.h"
 
 class Player : public Entity {
 
@@ -14,7 +15,9 @@ class Player : public Entity {
   Player();
   ~Player();
   
+  void handleInput(sf::RenderWindow& App, float ElapsedTime, std::vector<Object*>& objects, SpatialHash& grid);
   void update(sf::RenderWindow& window);
+  void draw(sf::RenderWindow& window);
   void enableRage();
   void shoot(float ElapsedTime);
   std::vector<Bullet*> bullets;
@@ -24,6 +27,7 @@ class Player : public Entity {
   inline int getKill() const
   { return kills; }
   bool playDeath(sf::RenderWindow& window);
+  virtual bool isPlayer();
 
  private:
 
@@ -52,6 +56,13 @@ class Player : public Entity {
   static const int RAGE_DECREASE;
   static const float RAGE_DECREASE_DELAY;
   static const float HIT_DELAY;
+
+  //Saiyan
+  bool isAnimated;
+  sf::Image saiyanSheet;
+  sf::Sprite saiyanSprite;
+  Animation saiyanAnim;
+  Animated saiyan;
 
   //Death
   sf::Image death_sheet;

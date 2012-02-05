@@ -35,6 +35,7 @@ class Object {
   virtual bool enemy(Object *subject);
   virtual int getAttack();
   virtual int getHealth();
+  virtual bool isPlayer();
 		
 		void move(Direction d, float ElapsedTime, std::vector<Object*> &objects, std::vector<int> possible);
 		int* collisions(std::vector<Object*> objects, std::vector<int> possible);
