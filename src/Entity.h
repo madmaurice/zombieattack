@@ -15,7 +15,7 @@ class Entity : public Object {
   virtual bool enemy(Object *subject);
 	
     bool alive(std::vector<Object*> &objects, int me);
-    void takeDamage(std::vector<Object*> objects, int me, int damage);
+    virtual void takeDamage(std::vector<Object*> objects, int me, int damage);
     int getAttack();
     int getHealth();
 

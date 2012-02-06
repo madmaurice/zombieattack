@@ -48,6 +48,8 @@ class Player : public Entity {
   sf::Image beam_pic;
   sf::SoundBuffer bite_wav;
   sf::SoundBuffer gun_wav;
+  sf::SoundBuffer kaioken_wav;
+  sf::Sound kaioken;
   float last_shot;
   static const float SHOOT_DELAY;
   static const int MAX_RAGE;

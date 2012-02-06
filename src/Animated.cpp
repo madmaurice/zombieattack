@@ -18,6 +18,7 @@ void Animated::Reset()
 	{
 		_sprite.SetImage(animation_->GetImage());
 		_sprite.SetSubRect(animation_->GetFrame(0));
+	  frame_ = 0;
 	}
 }
 
@@ -45,7 +46,6 @@ void Animated::SetAnimation(const Animation& animation)
 {
 	animation_ = &animation;
 	timer_ = animation.GetDelay();
-	frame_ = 0;
   Reset();
 }
 

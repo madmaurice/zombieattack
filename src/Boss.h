@@ -1,16 +1,16 @@
-#ifndef ENEMY_H
-#define ENEMY_H
+#ifndef BOSS_H
+#define BOSS_H
 
 #include <SFML/Graphics.hpp>
 
 #include "Entity.h"
 #include "Particle.h"
 
-class Enemy : public Entity {
+class Boss : public Entity {
 
  public:
-  Enemy(ParticleSystem& pSys, int x = 0, int y = 0, int level = 1);
-  ~Enemy();  
+  Boss(ParticleSystem& pSys, int x = 0, int y = 0, int level = 1);
+  ~Boss();  
 
   virtual void aggro(Object &target, float ElapsedTime, std::vector<Object*> objects, std::vector<int> possible, float running_time);
   virtual void takeDamage(std::vector<Object*> objects, int me, int damage);

@@ -8,6 +8,7 @@
 
 #include "Enemy.h"
 #include "Player.h"
+#include "Boss.h"
 #include "SpatialHash.h"
 #include "Particle.h"
 #include "Peak.h"
@@ -21,6 +22,14 @@ std::string operator<<(std::string& aString, std::stringstream& stream)
 {
   return aString + stream.str();
 }
+
+enum GameState
+{
+    INTRO,
+    WAVE1,
+    BOSS,
+    WAVE2
+};
 
 int main(int argc, char** argv) {
 
@@ -50,6 +59,7 @@ int main(int argc, char** argv) {
 
   Player *player = new Player; 
   objects.push_back(player);
+
 
   SpatialHash grid;
 
@@ -87,6 +97,8 @@ int main(int argc, char** argv) {
   //Title stuff
   Title title(App);
 
+  GameState gameState = INTRO;
+  
   //Title loop
   while (App.IsOpened()) {
 
@@ -113,6 +125,7 @@ int main(int argc, char** argv) {
     }
     else
     {
+      gameState = WAVE1;
       break;
     }
   }
@@ -129,6 +142,8 @@ int main(int argc, char** argv) {
 
   //Effect
   EffectSystem& effectSystem = EffectSystem::GetInstance();
+
+  Boss boss(particleSystem, 100, 200);
 
   //Start game loop
   while (App.IsOpened()) {
@@ -153,110 +168,183 @@ int main(int argc, char** argv) {
       }      
     }
 
+    if (player->getHealth() > 0)
+    {
+        float ElapsedTime = App.GetFrameTime();
+        running_time += ElapsedTime;
 
-    if (player->getHealth() > 0) {
-      //Increase spawn rate every 30 seconds
-      if (running_time - spawn_time > 30) {
-        spawn_rate++;
-        spawn_time = running_time;
-      }
-
-      //Spawn Enemy every 2 seconds
-      if (running_time - last_time > 2.0) {
-        for (int i = 0; i < spawn_rate; i++) {
-
-          objects.push_back(new Enemy(particleSystem, rand() % (SCREEN_WIDTH-100) + 40, rand() % (SCREEN_HEIGHT-100) + 40));
-        }
-        last_time = running_time;
-      }
-
-      grid.setup(objects);
-
-      //Get elapsed time
-      float ElapsedTime = App.GetFrameTime();
-      running_time += ElapsedTime;
-
-      //Handle input
-      player->handleInput(App, ElapsedTime, objects, grid);
-
-      App.Draw(BackgroundSprite);
-
-      //Draw body part over floor
-      effectSystem.drawBg(App);
-
-      std::stringstream kill, s2, s3, s4;
-      kill << player->getKill();
-
-      KillCount.SetText("Kills: " + kill.str());
-      App.Draw(KillCount);
-
-      s2 << (int)running_time;
-      std::string time_string;
-      s2 >> time_string;      
-
-      Timer.SetText("Time: " + time_string);
-      App.Draw(Timer);
-
-      s3 << player->getHealth()/100;
-      std::string hp_string;
-      s3 >> hp_string;
-
-      HP.SetText("HP: " + hp_string);
-      App.Draw(HP);
-
-      s4 << player->getKill() + (int)running_time;
-      std::string score_string;
-      s4 >> score_string;
-
-      Score.SetText("Score: " + score_string);
-
-      player->update(App);
-      player->draw(App);
-
-      //Move and draw all object (except bullets)
-      for (unsigned int i = 0; i < objects.size(); ++i) {
-
-        //Aggro is only for enemy
-        objects[i]->aggro(*player, ElapsedTime, objects, grid.getNearby(objects[i]), running_time);
-
-        //Don't draw player here
-        if (!objects[i]->isPlayer())
-          App.Draw(objects[i]->getSprite());
-      }
-
-      //Draw then move bullets
-      for(unsigned int i = 0; i < player->bullets.size(); ++i) {
-        App.Draw(player->bullets[i]->getSprite());
-        player->bullets[i]->move(ElapsedTime, objects, grid.getNearby(player->bullets[i]), player->bullets, i);
-        player->bullets[i]->drawEdge(App);
-      }
-
-      //Check if player kill a zombie
-      for(unsigned int i = 0; i < objects.size(); ++i) {
-        if (!objects[i]->alive(objects, i, running_time))
+        switch (gameState)
         {
-          player->addKill();
+            case INTRO:
+                break;
+            case WAVE1:
+            case WAVE2:
+            {
+                if (player->getKill() > 2)
+                {
+                    gameState = BOSS;
+                    objects.push_back(&boss);
+                    //TODO: Kill all enemies
+                    break;
+                }
+
+                //Increase spawn rate every 30 seconds
+                if (running_time - spawn_time > 30) {
+                    spawn_rate++;
+                    spawn_time = running_time;
+                }
+
+                //Spawn Enemy every 2 seconds
+                if (running_time - last_time > 2.0) {
+                    for (int i = 0; i < spawn_rate; i++) {
+
+                    objects.push_back(new Enemy(particleSystem, rand() % (SCREEN_WIDTH-100) + 40, rand() % (SCREEN_HEIGHT-100) + 40));
+                    }
+                    last_time = running_time;
+                }
+
+                grid.setup(objects);
+
+                //Get elapsed time
+
+                //Handle input
+                player->handleInput(App, ElapsedTime, objects, grid);
+
+                App.Draw(BackgroundSprite);
+
+                //Draw body part over floor
+                effectSystem.drawBg(App);
+
+                std::stringstream kill, s2, s3, s4;
+                kill << player->getKill();
+
+                KillCount.SetText("Kills: " + kill.str());
+                App.Draw(KillCount);
+
+                s2 << (int)running_time;
+                std::string time_string;
+                s2 >> time_string;      
+
+                Timer.SetText("Time: " + time_string);
+                App.Draw(Timer);
+
+                s3 << player->getHealth()/100;
+                std::string hp_string;
+                s3 >> hp_string;
+
+                HP.SetText("HP: " + hp_string);
+                App.Draw(HP);
+
+                s4 << player->getKill() + (int)running_time;
+                std::string score_string;
+                s4 >> score_string;
+
+                Score.SetText("Score: " + score_string);
+
+                player->update(App);
+                player->draw(App);
+
+                //Move and draw all object (except bullets)
+                for (unsigned int i = 0; i < objects.size(); ++i) {
+
+                    //Aggro is only for enemy
+                    objects[i]->aggro(*player, ElapsedTime, objects, grid.getNearby(objects[i]), running_time);
+
+                    //Don't draw player here
+                    if (!objects[i]->isPlayer())
+                    App.Draw(objects[i]->getSprite());
+                }
+
+                //Draw then move bullets
+                for(unsigned int i = 0; i < player->bullets.size(); ++i) {
+                    App.Draw(player->bullets[i]->getSprite());
+                    player->bullets[i]->move(ElapsedTime, objects, grid.getNearby(player->bullets[i]), player->bullets, i);
+                    player->bullets[i]->drawEdge(App);
+                }
+
+                //Check if player kill a zombie
+                for(unsigned int i = 0; i < objects.size(); ++i) {
+                    if (!objects[i]->alive(objects, i, running_time))
+                    {
+                        player->addKill();
+                    }
+                }
+
+                break;
+            }
+            case BOSS:
+                //Handle input
+                player->handleInput(App, ElapsedTime, objects, grid);
+
+                App.Draw(BackgroundSprite);
+
+                //Draw body part over floor
+                effectSystem.drawBg(App);
+
+                std::stringstream kill, s2, s3, s4;
+                kill << player->getKill();
+
+                KillCount.SetText("Kills: " + kill.str());
+                App.Draw(KillCount);
+
+                s2 << (int)running_time;
+                std::string time_string;
+                s2 >> time_string;      
+
+                Timer.SetText("Time: " + time_string);
+                App.Draw(Timer);
+
+                s3 << player->getHealth()/100;
+                std::string hp_string;
+                s3 >> hp_string;
+
+                HP.SetText("HP: " + hp_string);
+                App.Draw(HP);
+
+                s4 << player->getKill() + (int)running_time;
+                std::string score_string;
+                s4 >> score_string;
+
+                Score.SetText("Score: " + score_string);
+
+                player->update(App);
+                player->draw(App);
+
+                boss.aggro(*player, ElapsedTime, objects, grid.getNearby(&boss), running_time);
+
+                //Draw then move bullets
+                for(unsigned int i = 0; i < player->bullets.size(); ++i) {
+                    App.Draw(player->bullets[i]->getSprite());
+                    player->bullets[i]->move(ElapsedTime, objects, grid.getNearby(player->bullets[i]), player->bullets, i);
+                    player->bullets[i]->drawEdge(App);
+                }
+
+                App.Draw(boss.getSprite());
+
+                break;
         }
-      }
 
-      grid.clear();
+        grid.clear();
 
-      particleSystem.remove();
-      particleSystem.update();
-      particleSystem.render();
+        particleSystem.remove();
+        particleSystem.update();
+        particleSystem.render();
 
-      effectSystem.update(App.GetFrameTime());
-      effectSystem.draw(App);
+        effectSystem.update(App.GetFrameTime());
+        effectSystem.draw(App);
 
-      App.Draw(particleSystem.getSprite());
+        App.Draw(particleSystem.getSprite());
 
-      //Peaking
-      //peaker.update();
+        //Peaking
+        //peaker.update();
 
-      //Diplay window contents on screen
-      App.Display();
+        //Diplay window contents on screen
+        App.Display();
     }
-    else {
+
+    //Dead
+    else
+    {
       if (player->playDeath(App))
       {
         App.Display();

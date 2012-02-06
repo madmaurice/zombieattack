@@ -74,6 +74,12 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), 
     exit(EXIT_SUCCESS);
   }
 
+  if (!kaioken_wav.LoadFromFile("../resources/sfx/kaioken.ogg")) {
+    std::cout << "Error loading sfx" << std::endl; 
+    exit(EXIT_SUCCESS);
+  }
+  kaioken.SetBuffer(kaioken_wav);
+
   if (!saiyanSheet.LoadFromFile("../resources/sprites/BurstSheet.png")) {
     std::cout << "Error loading burst sheet" << std::endl; 
     exit(EXIT_SUCCESS);
@@ -84,7 +90,7 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), 
     exit(EXIT_SUCCESS);
   }
 
-  rage = 0;
+  rage = 100;
   kills = 0;
 
   rageMode = false;
@@ -113,37 +119,45 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), 
   saiyanAnim.SetImage(saiyanSheet);
   
   //1
-  saiyanAnim.AddFrame(sf::IntRect(40, 170, 40+width, 170+height));
+  saiyanAnim.AddFrame(sf::IntRect(1, 1, 1+width, 1+height));
 
   //2
-  width = 34;
-  height = 48;
-  saiyanAnim.AddFrame(sf::IntRect(0, 170, width, 170+height));
+  width = 51;
+  height = 65;
+  saiyanAnim.AddFrame(sf::IntRect(34, 1, 34+width, 1+height));
+  saiyanAnim.AddFrame(sf::IntRect(34, 1, 34+width, 1+height));
 
   //3
   width = 41;
   height = 69;
-  saiyanAnim.AddFrame(sf::IntRect(94, 160, 94+width, 160+height));
+  saiyanAnim.AddFrame(sf::IntRect(34, 67, 34+width, 67+height));
+  saiyanAnim.AddFrame(sf::IntRect(34, 67, 34+width, 67+height));
+  saiyanAnim.AddFrame(sf::IntRect(34, 67, 34+width, 67+height));
 
   //4
   width = 71;
   height = 69;
-  saiyanAnim.AddFrame(sf::IntRect(94, 86, 94+width, 69+height));
+  saiyanAnim.AddFrame(sf::IntRect(76, 67, 76+width, 67+height));
+  saiyanAnim.AddFrame(sf::IntRect(76, 67, 76+width, 67+height));
+  saiyanAnim.AddFrame(sf::IntRect(76, 67, 76+width, 67+height));
 
   //5
-  width = 89;
+  width = 93;
   height = 78;
-  saiyanAnim.AddFrame(sf::IntRect(0, 86, width, 86+height));
+  saiyanAnim.AddFrame(sf::IntRect(76, 137, 76+width, 137+height));
+  saiyanAnim.AddFrame(sf::IntRect(76, 137, 76+width, 137+height));
+  saiyanAnim.AddFrame(sf::IntRect(76, 137, 76+width, 137+height));
 
   //6
   width = 103;
   height = 81;
-  saiyanAnim.AddFrame(sf::IntRect(0, 0, width, height));
+  saiyanAnim.AddFrame(sf::IntRect(170, 137, 170+width, 137+height));
+  saiyanAnim.AddFrame(sf::IntRect(170, 137, 170+width, 137+height));
 
   //7
-  width = 48;
-  height = 71;
-  saiyanAnim.AddFrame(sf::IntRect(108, 0, 108+width, height));
+  width = 83;
+  height = 91;
+  saiyanAnim.AddFrame(sf::IntRect(76, 216, 76+width, 216+height));
   saiyanAnim.SetDelay(0.15f);
 
   saiyan.SetAnimation(saiyanAnim);
@@ -236,12 +250,13 @@ void Player::shoot(float elapsedTime) {
 
 void Player::enableRage()
 {
+
   if (rage >= MAX_RAGE && rageMode == false)
   {
     isAnimated = true;
     rageMode = true;
     rageClock.Reset();
-    //TODO animation + sound
+    kaioken.Play();
   }
 }
 
@@ -282,9 +297,14 @@ void Player::draw(sf::RenderWindow& window)
 {
   if (isAnimated)
   {
-    isAnimated = saiyan.Update(window.GetFrameTime());
+    if(!saiyan.Update(window.GetFrameTime()))
+    {
+      isAnimated = false;
+      saiyan.Reset();
+    }
     saiyanSprite.SetPosition(avatar.GetPosition());
     window.Draw(saiyanSprite);
+
   }
   else
   {
