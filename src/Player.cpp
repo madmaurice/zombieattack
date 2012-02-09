@@ -90,7 +90,7 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), 
     exit(EXIT_SUCCESS);
   }
 
-  rage = 100;
+  rage = 0;
   kills = 0;
 
   rageMode = false;
@@ -157,6 +157,7 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), 
   //7
   width = 83;
   height = 91;
+  saiyanAnim.AddFrame(sf::IntRect(76, 216, 76+width, 216+height));
   saiyanAnim.AddFrame(sf::IntRect(76, 216, 76+width, 216+height));
   saiyanAnim.SetDelay(0.15f);
 
@@ -297,12 +298,20 @@ void Player::draw(sf::RenderWindow& window)
 {
   if (isAnimated)
   {
+    //Anim has completed?
     if(!saiyan.Update(window.GetFrameTime()))
     {
       isAnimated = false;
       saiyan.Reset();
     }
-    saiyanSprite.SetPosition(avatar.GetPosition());
+    //Find sprite center
+    float centerX = avatar.GetPosition().x + avatar.GetSize().x / 2;
+    float centerY = avatar.GetPosition().y + avatar.GetSize().y / 2;
+
+    float x = centerX - saiyanSprite.GetSize().x /2;
+    float y = centerY - saiyanSprite.GetSize().y /2;
+
+    saiyanSprite.SetPosition(x, y);
     window.Draw(saiyanSprite);
 
   }

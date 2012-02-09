@@ -9,7 +9,7 @@
 class Boss : public Entity {
 
  public:
-  Boss(ParticleSystem& pSys, int x = 0, int y = 0, int level = 1);
+  Boss(ParticleSystem& pSys, int x = 0, int y = 0, int level = 5);
   ~Boss();  
 
   virtual void aggro(Object &target, float ElapsedTime, std::vector<Object*> objects, std::vector<int> possible, float running_time);

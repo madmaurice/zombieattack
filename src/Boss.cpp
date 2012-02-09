@@ -112,6 +112,12 @@ void Boss::takeDamage(std::vector<Object*> objects, int me, int damage) {
   sound.SetPitch(1.5f);
   sound.SetVolume(75.f);
   sound.Play();
+
+  int posX = avatar.GetPosition().x + avatar.GetSize().x /2;
+  int posY = avatar.GetPosition().y + avatar.GetSize().y /2;
+  int numBodyPart = sf::Randomizer::Random(2,4);
+  partSystem.fuel(2000, sf::Vector2f(posX, posY));
+  EffectSystem::GetInstance().bodyPartExplosion(sf::Vector2f(posX, posY), numBodyPart);
   health -= damage;
 }
 
@@ -139,8 +145,8 @@ bool Boss::alive(std::vector<Object*> &objects, int me, float running_time)
       posX += width /2;
       posY += height /2;
 
-      partSystem.fuel(2000, sf::Vector2f(posX, posY));
-      int numBodyPart = sf::Randomizer::Random(2,7);
+      partSystem.fuel(5000, sf::Vector2f(posX, posY));
+      int numBodyPart = sf::Randomizer::Random(20, 25);
       EffectSystem::GetInstance().bodyPartExplosion(sf::Vector2f(posX, posY), numBodyPart);
     }
     else

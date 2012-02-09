@@ -16,6 +16,9 @@
 #include "Title.h"
 
 
+void drawScore(sf::RenderWindow& app, Player* player, sf::String& KillCount, 
+               sf::String& Timer, sf::String& HP, sf::String& Score, int running_time);
+
 //If return a reference that fail because the string is returned is new (so
 //reference will be lost)
 std::string operator<<(std::string& aString, std::stringstream& stream)
@@ -143,7 +146,7 @@ int main(int argc, char** argv) {
   //Effect
   EffectSystem& effectSystem = EffectSystem::GetInstance();
 
-  Boss boss(particleSystem, 100, 200);
+  Boss* boss = new Boss(particleSystem, 100, 200);
 
   //Start game loop
   while (App.IsOpened()) {
@@ -180,10 +183,10 @@ int main(int argc, char** argv) {
             case WAVE1:
             case WAVE2:
             {
-                if (player->getKill() > 2)
+                if (player->getKill() > 2 && gameState == WAVE1)
                 {
                     gameState = BOSS;
-                    objects.push_back(&boss);
+                    objects.push_back(boss);
                     //TODO: Kill all enemies
                     break;
                 }
@@ -215,31 +218,7 @@ int main(int argc, char** argv) {
                 //Draw body part over floor
                 effectSystem.drawBg(App);
 
-                std::stringstream kill, s2, s3, s4;
-                kill << player->getKill();
-
-                KillCount.SetText("Kills: " + kill.str());
-                App.Draw(KillCount);
-
-                s2 << (int)running_time;
-                std::string time_string;
-                s2 >> time_string;      
-
-                Timer.SetText("Time: " + time_string);
-                App.Draw(Timer);
-
-                s3 << player->getHealth()/100;
-                std::string hp_string;
-                s3 >> hp_string;
-
-                HP.SetText("HP: " + hp_string);
-                App.Draw(HP);
-
-                s4 << player->getKill() + (int)running_time;
-                std::string score_string;
-                s4 >> score_string;
-
-                Score.SetText("Score: " + score_string);
+                drawScore(App, player, KillCount, Timer, HP, Score, static_cast<int> (running_time));
 
                 player->update(App);
                 player->draw(App);
@@ -273,6 +252,8 @@ int main(int argc, char** argv) {
                 break;
             }
             case BOSS:
+                grid.setup(objects);
+
                 //Handle input
                 player->handleInput(App, ElapsedTime, objects, grid);
 
@@ -281,36 +262,21 @@ int main(int argc, char** argv) {
                 //Draw body part over floor
                 effectSystem.drawBg(App);
 
-                std::stringstream kill, s2, s3, s4;
-                kill << player->getKill();
-
-                KillCount.SetText("Kills: " + kill.str());
-                App.Draw(KillCount);
-
-                s2 << (int)running_time;
-                std::string time_string;
-                s2 >> time_string;      
-
-                Timer.SetText("Time: " + time_string);
-                App.Draw(Timer);
-
-                s3 << player->getHealth()/100;
-                std::string hp_string;
-                s3 >> hp_string;
-
-                HP.SetText("HP: " + hp_string);
-                App.Draw(HP);
-
-                s4 << player->getKill() + (int)running_time;
-                std::string score_string;
-                s4 >> score_string;
-
-                Score.SetText("Score: " + score_string);
+                drawScore(App, player, KillCount, Timer, HP, Score, static_cast<int> (running_time));
 
                 player->update(App);
                 player->draw(App);
 
-                boss.aggro(*player, ElapsedTime, objects, grid.getNearby(&boss), running_time);
+                //Move and draw all object (except bullets)
+                for (unsigned int i = 0; i < objects.size(); ++i) {
+
+                    //Aggro is only for enemy
+                    objects[i]->aggro(*player, ElapsedTime, objects, grid.getNearby(objects[i]), running_time);
+
+                    //Don't draw player here
+                    if (!objects[i]->isPlayer())
+                    App.Draw(objects[i]->getSprite());
+                }
 
                 //Draw then move bullets
                 for(unsigned int i = 0; i < player->bullets.size(); ++i) {
@@ -318,8 +284,20 @@ int main(int argc, char** argv) {
                     player->bullets[i]->move(ElapsedTime, objects, grid.getNearby(player->bullets[i]), player->bullets, i);
                     player->bullets[i]->drawEdge(App);
                 }
+                
+                //Check if player kill a zombie
+                for(unsigned int i = 0; i < objects.size(); ++i) {
+                    if (!objects[i]->alive(objects, i, running_time))
+                    {
+                        player->addKill();
+                    }
+                }
 
-                App.Draw(boss.getSprite());
+                //if objects contain only player
+                if (objects.size() == 1)
+                {
+                  gameState = WAVE2;
+                }
 
                 break;
         }
@@ -403,5 +381,33 @@ int main(int argc, char** argv) {
 }
 
 
+void drawScore(sf::RenderWindow& App, Player* player, sf::String& KillCount, 
+               sf::String& Timer, sf::String& HP, sf::String& Score, int running_time)
+{
+    std::stringstream kill, s2, s3, s4;
+    kill << player->getKill();
 
+    KillCount.SetText("Kills: " + kill.str());
+    App.Draw(KillCount);
+
+    s2 << (int)running_time;
+    std::string time_string;
+    s2 >> time_string;      
+
+    Timer.SetText("Time: " + time_string);
+    App.Draw(Timer);
+
+    s3 << player->getHealth()/100;
+    std::string hp_string;
+    s3 >> hp_string;
+
+    HP.SetText("HP: " + hp_string);
+    App.Draw(HP);
+
+    s4 << player->getKill() + (int)running_time;
+    std::string score_string;
+    s4 >> score_string;
+
+    Score.SetText("Score: " + score_string);
+}
 
