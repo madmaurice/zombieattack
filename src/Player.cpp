@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Resources.h"
 #include "Screen.h"
+#include "Music.h"
 
 const float Player::SHOOT_DELAY = 0.25;
 const int Player::MAX_RAGE = 100;
@@ -118,7 +119,7 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), 
     exit(EXIT_SUCCESS);
   }
 
-  rage = 0;
+  rage = 100;
   kills = 0;
 
   rageMode = false;
@@ -333,6 +334,9 @@ void Player::draw(sf::RenderWindow& window)
     {
       isAnimated = false;
       saiyan.Reset();
+
+      //Play song
+      Music::GetInstance().playRageMode();
     }
     //Find sprite center
     float centerX = avatar.GetPosition().x + avatar.GetSize().x / 2;
@@ -397,6 +401,7 @@ void Player::updateRageMode()
       rage = 0;
       rageMode = false;
       switchForm(false);
+      Music::GetInstance().playLast();
     }
 
     rageClock.Reset();

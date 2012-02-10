@@ -14,6 +14,7 @@
 #include "Peak.h"
 #include "EffectSystem.h"
 #include "Title.h"
+#include "Music.h"
 
 
 void drawScore(sf::RenderWindow& app, Player* player, sf::String& KillCount, 
@@ -50,13 +51,6 @@ int main(int argc, char** argv) {
   }
   BackgroundSprite.SetImage(BackgroundImage);
 
-
-  sf::Music bgm;    
-  if (!bgm.OpenFromFile("../resources/music/cry_of_the_planet.ogg")) {
-
-    std::cout << "Error loading music" << std::endl; 
-    exit(EXIT_SUCCESS);
-  }
 
   std::vector<Object*> objects;
 
@@ -133,7 +127,8 @@ int main(int argc, char** argv) {
     }
   }
 
-  bgm.Play();
+
+  Music::GetInstance().playNormal();
 
   ParticleSystem particleSystem(SCREEN_WIDTH, SCREEN_HEIGHT);
   particleSystem.setDissolve( true );
@@ -338,7 +333,7 @@ int main(int argc, char** argv) {
 
       else {
         game_over = true;
-        bgm.Stop();
+        Music::GetInstance().stop();
 
         GameOverString.SetFont(MyFont);
         GameOverString.SetColor(sf::Color(255, 255, 0));
@@ -368,12 +363,8 @@ int main(int argc, char** argv) {
         Score.SetPosition(SCREEN_WIDTH/2 - KillCount.GetSize()/2 - 80,
             SCREEN_HEIGHT/2 + 200);
 
-        if (!bgm.OpenFromFile("../resources/music/previously_lost.mp3")) {
-
-          std::cout << "Error loading music" << std::endl; 
-          exit(EXIT_SUCCESS);
-        }
-        bgm.Play();
+        //play game over song
+        Music::GetInstance().playGameOver();
       }    
     }
   }
