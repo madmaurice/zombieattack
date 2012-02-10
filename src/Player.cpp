@@ -14,30 +14,58 @@ const float Player::RAGE_DECREASE_DELAY = 1;
 
 Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), saiyan(saiyanSprite), death(death_sprite){
   
-  down.push_back(&Resources::GetImage("Oli_walkFront1.png"));
-  down.push_back(&Resources::GetImage("Oli_walkFront2.png"));
-  down.push_back(&Resources::GetImage("Oli_walkFront3.png"));
+  ndown.push_back(&Resources::GetImage("Oli_walkFront1.png"));
+  ndown.push_back(&Resources::GetImage("Oli_walkFront2.png"));
+  ndown.push_back(&Resources::GetImage("Oli_walkFront3.png"));
+  down = ndown;
 
-  up.push_back(&Resources::GetImage("Oli_walkBack1.png"));
-  up.push_back(&Resources::GetImage("Oli_walkBack2.png"));
-  up.push_back(&Resources::GetImage("Oli_walkBack3.png"));
+  nup.push_back(&Resources::GetImage("Oli_walkBack1.png"));
+  nup.push_back(&Resources::GetImage("Oli_walkBack2.png"));
+  nup.push_back(&Resources::GetImage("Oli_walkBack3.png"));
+  up = nup;
 
-  right.push_back(&Resources::GetImage("Oli_walkRight1.png"));
-  right.push_back(&Resources::GetImage("Oli_walkRight2.png"));
-  right.push_back(&Resources::GetImage("Oli_walkRight3.png"));
+  nright.push_back(&Resources::GetImage("Oli_walkRight1.png"));
+  nright.push_back(&Resources::GetImage("Oli_walkRight2.png"));
+  nright.push_back(&Resources::GetImage("Oli_walkRight3.png"));
+  right = nright;
 
-  left.push_back(&Resources::GetImage("Oli_walkLeft1.png"));
-  left.push_back(&Resources::GetImage("Oli_walkLeft2.png"));
-  left.push_back(&Resources::GetImage("Oli_walkLeft3.png"));
+  nleft.push_back(&Resources::GetImage("Oli_walkLeft1.png"));
+  nleft.push_back(&Resources::GetImage("Oli_walkLeft2.png"));
+  nleft.push_back(&Resources::GetImage("Oli_walkLeft3.png"));
+  left = nleft;
 
-  for(unsigned int i = 0; i < 3; ++i)
+  sdown.push_back(&Resources::GetImage("SOli_walkFront1.png"));
+  sdown.push_back(&Resources::GetImage("SOli_walkFront2.png"));
+  sdown.push_back(&Resources::GetImage("SOli_walkFront3.png"));
+
+  sup.push_back(&Resources::GetImage("SOli_walkBack1.png"));
+  sup.push_back(&Resources::GetImage("SOli_walkBack2.png"));
+  sup.push_back(&Resources::GetImage("SOli_walkBack3.png"));
+
+  sright.push_back(&Resources::GetImage("SOli_walkRight1.png"));
+  sright.push_back(&Resources::GetImage("SOli_walkRight2.png"));
+  sright.push_back(&Resources::GetImage("SOli_walkRight3.png"));
+
+  sleft.push_back(&Resources::GetImage("SOli_walkLeft1.png"));
+  sleft.push_back(&Resources::GetImage("SOli_walkLeft2.png"));
+  sleft.push_back(&Resources::GetImage("SOli_walkLeft3.png"));
+
+  for(unsigned int i = 0; i < 3; ++i){
     down[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
-  for(unsigned int i = 0; i < 3; ++i)
+    sdown[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
+  }
+  for(unsigned int i = 0; i < 3; ++i){
     up[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
-  for(unsigned int i = 0; i < 3; ++i)
+    sup[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
+  }
+  for(unsigned int i = 0; i < 3; ++i){
     left[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
-  for(unsigned int i = 0; i < 3; ++i)
+    sleft[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
+  }
+  for(unsigned int i = 0; i < 3; ++i){
     right[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
+    sright[i]->CreateMaskFromColor(sf::Color(255, 255, 255));
+  }
 
   avatar.SetImage(*down[0]);
   avatar.SetColor(sf::Color(255, 255, 255, 255));
@@ -258,6 +286,8 @@ void Player::enableRage()
     rageMode = true;
     rageClock.Reset();
     kaioken.Play();
+
+    switchForm(true);
   }
 }
 
@@ -366,6 +396,7 @@ void Player::updateRageMode()
     {
       rage = 0;
       rageMode = false;
+      switchForm(false);
     }
 
     rageClock.Reset();
@@ -396,3 +427,45 @@ bool Player::isPlayer()
 {
   return true;
 }
+
+void Player::switchForm(bool saiyan)
+{
+  if (saiyan)
+  {
+    //Switch direction vector
+    up = sup;
+    down = sdown;
+    left = sleft;
+    right = sright;
+
+    //Switch sprite
+    avatar = sf::Sprite(*down[0], avatar.GetPosition());
+  }
+  else
+  {
+    //Switch direction vector
+    up = nup;
+    down = ndown;
+    left = nleft;
+    right = nright;
+
+    //Switch sprite
+    if(facing == LEFT) 
+    {
+      avatar = sf::Sprite(*left[frame], avatar.GetPosition());
+    }
+    else if(facing == RIGHT) 
+    {    
+      avatar = sf::Sprite(*right[frame], avatar.GetPosition());
+    }
+    else if(facing == UP) 
+    {
+      avatar = sf::Sprite(*up[frame], avatar.GetPosition());
+    }
+    else if(facing == DOWN) 
+    {
+      avatar = sf::Sprite(*down[frame], avatar.GetPosition());
+    }  
+  }
+}
+

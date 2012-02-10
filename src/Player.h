@@ -30,6 +30,23 @@ class Player : public Entity {
   virtual bool isPlayer();
 
  private:
+  void switchForm(bool saiyan);
+
+
+  //Normal walk vector
+  ImgVect nup;
+  ImgVect ndown;
+  ImgVect nleft;
+  ImgVect nright;
+
+  //Saiyan walk vectors
+  ImgVect sup;
+  ImgVect sdown;
+  ImgVect sleft;
+  ImgVect sright;
+  
+  //old sprite
+  sf::Sprite saveSprite;
 
   void addRage(unsigned int num);
   void updateRageMode();
