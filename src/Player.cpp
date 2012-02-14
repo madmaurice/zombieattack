@@ -302,7 +302,24 @@ void Player::handleInput(sf::RenderWindow& App, float ElapsedTime, std::vector<O
 
     //Rage
     if(App.GetInput().IsKeyDown(sf::Key::S))
+    {
       enableRage();
+
+      if(rageMode)
+      {
+        //Kill nearby enemies
+        std::vector<int> nearby = grid.getNearby(this);
+        for(unsigned int i = 0; i < nearby.size(); ++i)
+        {
+          int position = nearby[i];
+
+          if(objects[position]->getType() == FOE)
+          {
+            objects[position]->takeDamage(objects, position, getAttack());
+          }
+        }
+      }
+    }
 
     //Move the sprite
     if(App.GetInput().IsKeyDown(sf::Key::Left))
@@ -431,6 +448,11 @@ bool Player::playDeath(sf::RenderWindow& window)
 bool Player::isPlayer()
 {
   return true;
+}
+
+bool Player::isRageMode()
+{
+  return rageMode;
 }
 
 void Player::switchForm(bool saiyan)

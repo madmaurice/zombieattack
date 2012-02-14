@@ -28,6 +28,7 @@ class Player : public Entity {
   { return kills; }
   bool playDeath(sf::RenderWindow& window);
   virtual bool isPlayer();
+  virtual bool isRageMode();
 
  private:
   void switchForm(bool saiyan);
