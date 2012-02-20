@@ -119,7 +119,7 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), 
     exit(EXIT_SUCCESS);
   }
 
-  rage = 100;
+  rage = 0;
   kills = 0;
 
   rageMode = false;

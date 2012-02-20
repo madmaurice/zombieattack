@@ -5,9 +5,9 @@
 const std::string basePath = "../resources/music/";
 
 
-const std::string normal = "cry_of_the_planet.ogg";
+const std::string normal = "vbogey.ogg";
 const std::string boss = "cry_of_the_planet.ogg";
-const std::string gameover = "previously_lost.mp3";
+const std::string gameover = "credits.ogg";
 
 //Rage tune
 const std::string onepiece = "one_piece.ogg";
@@ -35,14 +35,12 @@ void Music::stop()
 {
   if (_bgMusic.GetStatus() == sf::Sound::Playing)
   {
-    std::cout << "Stoping" << std::endl;
     _bgMusic.Stop();
   }
 }
 
 void Music::playLast()
 {
-  std::cout << "Last : " << _lastSong << std::endl;
   changeSong(_lastSong);
 }
 

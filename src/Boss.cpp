@@ -40,7 +40,7 @@ Boss::Boss(ParticleSystem& pSys, int x, int y, int level) : Entity(level, level)
   avatar.SetImage(*down[0]);
   avatar.SetColor(sf::Color(255, 255, 255, 255));
   avatar.SetPosition(x, y); 
-  speed *= 1;
+  speed *= 0.85f;
   facingRight = true;
   type = FOE;
 
