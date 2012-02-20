@@ -5,8 +5,8 @@
 const std::string basePath = "../resources/music/";
 
 
-const std::string normal = "vbogey.ogg";
-const std::string boss = "cry_of_the_planet.ogg";
+const std::string normal = "dark_encounter.ogg";
+const std::string boss = "vbogey.ogg";
 const std::string gameover = "credits.ogg";
 
 //Rage tune
@@ -41,17 +41,26 @@ void Music::stop()
 
 void Music::playLast()
 {
+  playingRage = false;
   changeSong(_lastSong);
 }
 
 void Music::playNormal()
 {
-  changeSong(normal);
+  if(!playingRage)
+  {
+    changeSong(normal);
+    _lastSong = normal;
+  }
 }
 
 void Music::playBoss()
 {
-  changeSong(boss);
+  if (!playingRage)
+  {
+    changeSong(boss);
+    _lastSong = boss;
+  }
 }
 
 void Music::playGameOver()
@@ -59,12 +68,17 @@ void Music::playGameOver()
   changeSong(gameover);
 }
 
+std::string Music::getSong()
+{
+  return _currentSong;
+}
+
 void Music::playRageMode()
 {
+  playingRage = true;
   int num = sf::Randomizer::Random(1,3);
   std::string song;
-
-  _lastSong = _currentSong;
+  float vol= 60.0f;
 
   switch (num)
   {
@@ -73,16 +87,18 @@ void Music::playRageMode()
       break;
     case 2:
       song = naruto;
+      vol = 40.0f;
       break;
     case 3:
       song = bang;
+      vol = 70.0f;
       break;
   }
 
-  changeSong(song);
+  changeSong(song, vol);
 }
 
-void Music::changeSong(const std::string& song)
+void Music::changeSong(const std::string& song, float volume)
 {
   if (_currentSong != "")
     stop();
@@ -92,6 +108,7 @@ void Music::changeSong(const std::string& song)
     std::cout << "Error loading music " << song << std::endl; 
     return;
   }
+  _bgMusic.SetVolume(volume);
 
   _currentSong = song;
 

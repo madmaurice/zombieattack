@@ -88,12 +88,12 @@ int main(int argc, char** argv) {
   waveText.SetSize(75.f);
   waveText.SetPosition(225, SCREEN_HEIGHT/2 - waveText.GetSize());
 
-  float waveTime;
+  float waveTime = 0;
   int waveNumber = 0;
   bool newWave = true;
 
   int numBoss = 1;
-  int killPerWave = 0;
+  int killPerWave = 15;
   int killThisWave = 0;
 
   sf::String Timer, KillCount, HP, GameOverString, Score;
@@ -121,6 +121,14 @@ int main(int argc, char** argv) {
 
   int spawn_rate = 1;
   float spawn_time = 0.0;
+
+  sf::SoundBuffer predBuffer;
+  sf::Sound predSound;
+
+  if (!predBuffer.LoadFromFile("../resources/sfx/predator.ogg")) {
+    std::cout << "Error loading sfx" << std::endl; 
+  }
+  predSound.SetBuffer(predBuffer);
 
   //Title stuff
   Title title(App);
@@ -218,7 +226,7 @@ int main(int argc, char** argv) {
                   wave << waveNumber;
                   waveText.SetText("Wave " + wave.str());
 
-                  killPerWave += 1 * waveNumber;
+                  killPerWave += 10 * waveNumber;
                   killThisWave = 0;
                 }
 
@@ -228,11 +236,22 @@ int main(int argc, char** argv) {
 
                     //Create Boss
                     for (int i = 0; i < numBoss; i++) {
-                      objects.push_back(new Boss(particleSystem, sf::Randomizer::Random(200, 600), sf::Randomizer::Random(200, 500)));
+                      objects.push_back(new Boss(particleSystem, sf::Randomizer::Random(200, 600), sf::Randomizer::Random(200, 500), 40));
                     }
 
                     newWave = true;
+                    if (!player->isRageMode())
+                    {
+                      Music::GetInstance().stop();
+                      Music::GetInstance().playBoss();
+                    }
                     break;
+                }
+
+                if (!player->isRageMode() && Music::GetInstance().getSong() != "dark_encounter.ogg")
+                {
+                  Music::GetInstance().stop();
+                  Music::GetInstance().playNormal();
                 }
 
                 //Increase spawn rate every 30 seconds
@@ -282,7 +301,7 @@ int main(int argc, char** argv) {
                 for(unsigned int i = 0; i < player->bullets.size(); ++i) {
                     App.Draw(player->bullets[i]->getSprite());
                     player->bullets[i]->move(ElapsedTime, objects, grid.getNearby(player->bullets[i]), player->bullets, i);
-                    player->bullets[i]->drawEdge(App);
+                    //player->bullets[i]->drawEdge(App);
                 }
 
                 //Check if player kill a zombie
@@ -302,6 +321,12 @@ int main(int argc, char** argv) {
                   waveTime = running_time;
                   newWave = false;
                   waveText.SetText("BOSS");
+                }
+
+                if (!player->isRageMode() && Music::GetInstance().getSong() != "vbogey.ogg")
+                {
+                  Music::GetInstance().stop();
+                  Music::GetInstance().playBoss();
                 }
 
                 grid.setup(objects);
@@ -334,7 +359,7 @@ int main(int argc, char** argv) {
                 for(unsigned int i = 0; i < player->bullets.size(); ++i) {
                     App.Draw(player->bullets[i]->getSprite());
                     player->bullets[i]->move(ElapsedTime, objects, grid.getNearby(player->bullets[i]), player->bullets, i);
-                    player->bullets[i]->drawEdge(App);
+                    //player->bullets[i]->drawEdge(App);
                 }
                 
                 //Check if player kill a zombie
@@ -350,6 +375,17 @@ int main(int argc, char** argv) {
                 {
                   gameState = WAVE;
                   newWave = true;
+
+                  //Increase number of Boss every 5 waves
+                  if (waveNumber % 5 == 0)
+                  {
+                    numBoss++;
+                  }
+                  if (!player->isRageMode())
+                  {
+                    Music::GetInstance().stop();
+                    Music::GetInstance().playNormal();
+                  }
                 }
 
                 break;
@@ -433,6 +469,8 @@ int main(int argc, char** argv) {
         Score.SetPosition(SCREEN_WIDTH/2 - KillCount.GetSize()/2 - 80,
             SCREEN_HEIGHT/2 + 200);
 
+        Music::GetInstance().stop();
+        predSound.Play();
       }    
     }
   }

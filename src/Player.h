@@ -33,6 +33,7 @@ class Player : public Entity {
  private:
   void switchForm(bool saiyan);
 
+  sf::Clock shootClock;
 
   //Normal walk vector
   ImgVect nup;
@@ -67,6 +68,7 @@ class Player : public Entity {
   sf::SoundBuffer bite_wav;
   sf::SoundBuffer gun_wav;
   sf::SoundBuffer kaioken_wav;
+  sf::SoundBuffer kiblast_wav;
   sf::Sound kaioken;
   float last_shot;
   static const float SHOOT_DELAY;

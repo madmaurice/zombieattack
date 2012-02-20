@@ -24,6 +24,15 @@ Title::Title(sf::RenderWindow& window) : _window(window)
     std::cout << "Error loading music Title 1" << std::endl; 
   }
 
+  if (!_megaFont.LoadFromFile("../resources/fonts/megaman_2.ttf", 50)) {
+    std::cout << "Fail megaman font" << std::endl;
+  }
+  _enterText.SetFont(_megaFont);
+  _enterText.SetColor(sf::Color(255,255,255));
+  _enterText.SetSize(25.0f);
+  _enterText.SetPosition(140, 400);
+  _enterText.SetText("Press Enter");
+
   unsigned int imgWidth = _bgImage.GetWidth();
   unsigned int imgHeight = _bgImage.GetHeight();
 
@@ -33,7 +42,6 @@ Title::Title(sf::RenderWindow& window) : _window(window)
 
   _bgRectBottom = imgHeight;
   _bgRectTop = (_bgRectBottom * ZOOM_LEVEL - SCREEN_HEIGHT) / ZOOM_LEVEL;
-  //_bgRectTop = 400;
 
   _bgSprite.SetSubRect(sf::IntRect(0, _bgRectTop, imgWidth, _bgRectBottom));
 
@@ -55,7 +63,6 @@ void Title::update()
   switch (_state)
   {
     case START:
-      //TODO play music
       _state = SCROLLING;
       _bgMusic.Play();
       _window.Draw(_bgSprite);
@@ -79,6 +86,7 @@ void Title::update()
     case END:
       _window.Draw(_bgSprite);
       _window.Draw(_bgTitleSprite);
+      _window.Draw(_enterText);
       break;
   }
 

@@ -19,12 +19,15 @@ class Music
   void playGameOver();
   void playRageMode();
 
+  std::string getSong();
+
  private:
 
   Music();
   ~Music();
 
-  void changeSong(const std::string& song);
+  void changeSong(const std::string& song, float volume = 60.0f);
+  bool playingRage;
 
   //Sound
   sf::Music _bgMusic;

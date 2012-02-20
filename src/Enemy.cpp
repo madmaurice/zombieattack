@@ -158,7 +158,7 @@ void Enemy::takeDamage(std::vector<Object*> objects, int me, int damage) {
 
   sound.SetBuffer(zombie_attacked_wav); 
   sound.SetPitch(1.5f);
-  sound.SetVolume(75.f);
+  sound.SetVolume(85.f);
   sound.Play();
   health -= damage;
 }
@@ -175,7 +175,7 @@ bool Enemy::alive(std::vector<Object*> &objects, int me, float running_time)
     else if (death_time == 0.0) {
       sound.SetBuffer(zombie_attacked_wav); 
       sound.SetPitch(1.5f);
-      sound.SetVolume(75.f);
+      sound.SetVolume(85.f);
       sound.Play();
       death_time = running_time;
 

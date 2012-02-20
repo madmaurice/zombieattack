@@ -9,7 +9,7 @@
 const float Boss::SFX_DELAY = 10.0;
 const float Boss::DEATH_DELAY = 0.6;
 
-Boss::Boss(ParticleSystem& pSys, int x, int y, int level) : Entity(level, level), partSystem(pSys)
+Boss::Boss(ParticleSystem& pSys, int x, int y, int level) : Entity(level, 7), partSystem(pSys)
 {
   down.push_back(&Resources::GetImage("chair1.png"));
   down.push_back(&Resources::GetImage("chair2.png"));
@@ -115,10 +115,13 @@ void Boss::takeDamage(std::vector<Object*> objects, int me, int damage) {
 
   int posX = avatar.GetPosition().x + avatar.GetSize().x /2;
   int posY = avatar.GetPosition().y + avatar.GetSize().y /2;
-  int numBodyPart = sf::Randomizer::Random(2,4);
-  partSystem.fuel(2000, sf::Vector2f(posX, posY));
-  EffectSystem::GetInstance().bodyPartExplosion(sf::Vector2f(posX, posY), numBodyPart);
-  health -= damage;
+  if(sf::Randomizer::Random(0,10) <= 6)
+  {
+    int numBodyPart = sf::Randomizer::Random(2,4);
+    EffectSystem::GetInstance().bodyPartExplosion(sf::Vector2f(posX, posY), numBodyPart);
+  }
+    partSystem.fuel(1000, sf::Vector2f(posX, posY));
+    health -= damage;
 }
 
 bool Boss::alive(std::vector<Object*> &objects, int me, float running_time)

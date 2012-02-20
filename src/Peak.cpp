@@ -31,9 +31,9 @@ Peak::Peak(sf::RenderWindow& window) : _window(window)
   }
 
   //Fill vector of bubbles
+  _bubbleVect.push_back(&_ostiImg);
   _bubbleVect.push_back(&_fkImg);
   _bubbleVect.push_back(&_arghImg);
-  _bubbleVect.push_back(&_ostiImg);
   _bubbleVect.push_back(&_crisImg);
 
   if (!_toastyBuf.LoadFromFile("../resources/sfx/toasty.wav")) {
@@ -41,7 +41,6 @@ Peak::Peak(sf::RenderWindow& window) : _window(window)
   }
 
   _toastySound.SetBuffer(_toastyBuf);
-  _toastySound.SetVolume(50.f);
   _picSprite.SetImage(_picImg);
   _picSprite.SetPosition(SCREEN_WIDTH, Y_POS);
   _timeSinceShown = 0;
@@ -102,10 +101,10 @@ void Peak::move()
             _timeShown = 0;
             _state = MOVE_LEFT;
 
-            if (toastyClock.GetElapsedTime() > 30)
+            if (toastyClock.GetElapsedTime() > 25)
             {
               //Decide if this is a bubble or toasty
-              if (sf::Randomizer::Random(0,100) >= 75)
+              if (sf::Randomizer::Random(0,100) >= 80)
               {
                 _isBubble = true;
               }

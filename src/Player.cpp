@@ -7,7 +7,7 @@
 
 const float Player::SHOOT_DELAY = 0.25;
 const int Player::MAX_RAGE = 100;
-const int Player::KILL_RAGE = 2;
+const int Player::KILL_RAGE = 1;
 const int Player::HIT_RAGE = 5;
 const float Player::HIT_DELAY = 2;
 const int Player::RAGE_DECREASE = 5;
@@ -109,6 +109,11 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), 
   }
   kaioken.SetBuffer(kaioken_wav);
 
+  if (!kiblast_wav.LoadFromFile("../resources/sfx/kiblast.wav")) {
+    std::cout << "Error loading sfx" << std::endl; 
+    exit(EXIT_SUCCESS);
+  }
+
   if (!saiyanSheet.LoadFromFile("../resources/sprites/BurstSheet.png")) {
     std::cout << "Error loading burst sheet" << std::endl; 
     exit(EXIT_SUCCESS);
@@ -131,6 +136,7 @@ Player::Player() : Entity(10000, 1), font(Resources::GetFont("megaman_2.ttf")), 
   rageStr.SetText("R A G E");
 
   rageClock.Reset();
+  shootClock.Reset();
 
   //Init rage meter
   rageMeterBox = sf::Shape::Rectangle(0, 0, 100, 15, sf::Color::Black, 2, sf::Color::Black); 
@@ -215,17 +221,19 @@ Player::~Player() {}
 
 void Player::shoot(float elapsedTime) {
 
+  float tmpDelay = SHOOT_DELAY;
   sf::Sprite bullet_sprite;
   if (rageMode)
   {
     bullet_sprite.SetImage(beam_pic);
+    tmpDelay = 0.40f;
   }
   else
   {
     bullet_sprite.SetImage(bullet_pic);
   }
 
-  if (last_shot >= SHOOT_DELAY) {
+  if (shootClock.GetElapsedTime() >= tmpDelay) {
 
     int _x = this->getSprite().GetPosition().x;
     int _y = this->getSprite().GetPosition().y;
@@ -267,10 +275,21 @@ void Player::shoot(float elapsedTime) {
       bullets.push_back(tmp);
       bullet_sprite.Rotate(90);
     }
-    sound.SetBuffer(gun_wav); 
-    sound.SetVolume(50.f);
+
+    if (rageMode)
+    {
+      sound.SetBuffer(kiblast_wav); 
+      sound.SetVolume(80.f);
+    }
+    else
+    {
+      sound.SetBuffer(gun_wav); 
+      sound.SetVolume(40.f);
+    }
     sound.Play();
     last_shot = 0;
+    addRage(1);
+    shootClock.Reset();
   }
   else
   {

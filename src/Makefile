@@ -1,7 +1,7 @@
 CXX := g++
 EXEC := zombie
-#DEBUG := -O2
-DEBUG := -g
+DEBUG := -O2
+#DEBUG := -g
 
 OBJDIR := obj
 

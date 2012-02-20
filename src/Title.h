@@ -36,6 +36,8 @@ class Title
   sf::Sprite _bgTitleSprite;
   sf::Image _bgImage;
   sf::Sprite _bgSprite;
+  sf::Font _megaFont;
+  sf::String _enterText;
   int _bgRectTop;
   int _bgRectBottom;
   bool _show;
